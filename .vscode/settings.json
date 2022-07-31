@@ -1,0 +1,9 @@
+{
+    "git.allowForcePush": true,
+    "git.allowNoVerifyCommit": true,
+    "git.enableSmartCommit": true,
+    "git.ignoreRebaseWarning": true,
+    "git.inputValidation": "always",
+    "git.postCommitCommand": "push",
+    "git.useEditorAsCommitInput": false
+}
