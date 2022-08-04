@@ -1,0 +1,7 @@
+{
+    "Plugins" {
+        "Anti_Cheat": "url",
+        "GEOIP": "url",
+        "LagCompensation_0_Ping": "Wait Update Plugin" 
+    }
+}
