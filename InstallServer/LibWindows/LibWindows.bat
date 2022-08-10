@@ -14,3 +14,4 @@ goto Update
 goto InstallServer
 test
 test
+test
