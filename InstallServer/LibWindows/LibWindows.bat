@@ -12,4 +12,4 @@ goto Check
 goto Check Server
 goto Update
 goto InstallServer
-test
+testt
