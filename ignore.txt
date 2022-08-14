@@ -1,0 +1,2 @@
+###this is to remember the thing i forget just ignore
+%~dp0<-- folder
