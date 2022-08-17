@@ -6,6 +6,7 @@ Title Source Server
 
 goto Download
 goto Check
+goto Check_CsSo_Installed
 goto Check Server
 goto Update
 goto InstallServer
