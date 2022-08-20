@@ -9,7 +9,6 @@ pause
 exit /b
 
 :Check
-md "%Steam%"\amoeba
 title Check Folder Game
 if exist "%Steam%" (
   echo Folder Cs Source Steam exist [Yes] 
