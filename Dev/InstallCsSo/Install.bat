@@ -5,6 +5,7 @@ for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
 call :Check
+
 pause
 exit /b
 
