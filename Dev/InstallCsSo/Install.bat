@@ -59,8 +59,14 @@ echo (1) "Change bin to cstrike"
 echo (2) "Change bin to csso"
 echo (3) "Exit"
 set /p choice=
-if %choice% == 1 goto steamcstrike
-if %choice% == 2 goto steamcsso
+if %choice% == 1 (
+echo test
+pause
+exit
+)
+if %choice% == 2 (
+  echo test
+)
 if %choice% == 3 exit
 
 :bin_warzone
@@ -70,8 +76,14 @@ echo (1) "Change bin to cstrike"
 echo (2) "Change bin to csso"
 echo (3) "Exit"
 set /p choice=
-if %choice% == 1 goto warzonecstrike
-if %choice% == 2 goto warzonecsso
+if %choice% == 1 (
+echo test
+pause
+exit
+)
+if %choice% == 2 (
+  echo test
+)
 if %choice% == 3 exit
 
 :bin_launcher
@@ -81,8 +93,14 @@ echo (1) "Change bin to cstrike"
 echo (2) "Change bin to csso"
 echo (3) "Exit"
 set /p choice=
-if %choice% == 1 goto launchercstrike
-if %choice% == 2 goto launchercsso
+if %choice% == 1 (
+echo test
+pause
+exit
+)
+if %choice% == 2 (
+  echo test
+)
 if %choice% == 3 exit
 
 
