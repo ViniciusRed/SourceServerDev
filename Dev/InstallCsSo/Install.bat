@@ -11,6 +11,7 @@ pause
 exit /b
 
 :Install_CsWarzone
+call :BinBkp
 call :Download_Resources
 call :Download
 call :Install_Resources
@@ -22,7 +23,9 @@ if exist "%CsSoFile%" (
   echo File CsSo exist [No]
 )
 goto :eof
+
 :Install_Launcher
+call :BinBkp
 call :Download_Resources
 call :Download
 call :Install_Resources
@@ -34,7 +37,9 @@ if exist "%CsSoFile%" (
   echo File CsSo exist [No]
 )
 goto :eof
+
 :Install_Steam
+call :BinBkp
 call :Download_Resources
 call :Download
 call :Install_Resources
