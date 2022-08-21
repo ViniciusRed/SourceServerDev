@@ -47,57 +47,58 @@ if exist "%CsSoFile%" (
 )
 goto :eof
 
-:bin
-title Bin exchange
-echo [Bin exchange]
-
-goto :eof
-
-:bin_steam_cstrike
+:bin_steam
+title "Change bin"
+echo [Change bin]
+echo (1) "Change bin to cstrike"
+echo (2) "Change bin to csso"
+echo (3) "Exit"
 set /p choice=
-if %choice% == 1 goto label1
-if %choice% == 2 goto label2
+if %choice% == 1 goto steamcstrike
+if %choice% == 2 goto steamcsso
+if %choice% == 3 exit
 
-:bin_steam_csso
+:bin_warzone
+title "Change bin"
+echo [Change bin]
+echo (1) "Change bin to cstrike"
+echo (2) "Change bin to csso"
+echo (3) "Exit"
 set /p choice=
-if %choice% == 1 goto label1
-if %choice% == 2 goto label2
+if %choice% == 1 goto warzonecstrike
+if %choice% == 2 goto warzonecsso
+if %choice% == 3 exit
 
-:bin_warzone_cstrike
+:bin_launcher
+title "Change bin"
+echo [Change bin]
+echo (1) "Change bin to cstrike"
+echo (2) "Change bin to csso"
+echo (3) "Exit"
 set /p choice=
-if %choice% == 1 goto label1
-if %choice% == 2 goto label2
+if %choice% == 1 goto launchercstrike
+if %choice% == 2 goto launchercsso
+if %choice% == 3 exit
 
-:bin_warzone_csso
-set /p choice=
-if %choice% == 1 goto label1
-if %choice% == 2 goto label2
-
-:bin_launcher_cstrike
-set /p choice=
-if %choice% == 1 goto label1
-if %choice% == 2 goto label2
-
-:bin_launcher_csso
-set /p choice=
-if %choice% == 1 goto label1
-if %choice% == 2 goto label2
 
 :CsSo_Installed
 title CsSo_Installed
 echo [CsSo_Installed]
 if exist "%Steam%\csso" (
   echo Steam CsSo Installed Yes 
+  call :bin_steam
 ) else (
   echo Steam CsSo Installed No
 )
 if exist %CSWarzone%\csso (
   echo CsWarzone CsSo Installed Yes 
+  call :bin_warzone
 ) else (
   echo CsWarzone CsSo Installed No
 )
 if exist "%Launcher%\csso" (
   echo 7Launcher CsSo Installed Yes 
+  call :bin_launcher
 ) else (
   echo 7Launcher CsSo Installed No
 )
