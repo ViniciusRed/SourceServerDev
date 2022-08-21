@@ -87,22 +87,19 @@ if %choice% == 2 goto label2
 title CsSo_Installed
 echo [CsSo_Installed]
 if exist "%Steam%\csso" (
-  echo Yes 
-  :bin_steam_cstrike
+  echo Steam CsSo Installed Yes 
 ) else (
-  echo No
+  echo Steam CsSo Installed No
 )
 if exist %CSWarzone%\csso (
-  echo Yes 
-  :bin_warzone_cstrike
+  echo CsWarzone CsSo Installed Yes 
 ) else (
-  echo No
+  echo CsWarzone CsSo Installed No
 )
 if exist "%Launcher%\csso" (
-  echo Yes 
-  :bin_launcher_cstrike
+  echo 7Launcher CsSo Installed Yes 
 ) else (
-  echo No
+  echo 7Launcher CsSo Installed No
 )
 goto :eof
 
