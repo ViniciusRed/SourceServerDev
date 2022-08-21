@@ -4,9 +4,7 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :Download_Resources
-call :Install_Resources
-call :Clear
+call :Install_CsWarzone
 echo [CsSo Successfully installed]
 pause
 exit /b
@@ -26,9 +24,9 @@ if exist %CsSoFile% (
 md %SteamBkp%\BinBkp\Bin_CsSo
 Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
-  %zip2%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
+  %zip2%\7z.exe x -o%Warzone%\Install %temp%\%Name%
 ) else (
-   %zip1%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
+  %zip1%\7z.exe x -o%Warzone%\Install %temp%\%Name%
 )
 goto :eof
 
@@ -47,9 +45,9 @@ if exist %CsSoFile% (
 md %SteamBkp%\BinBkp\Bin_CsSo
 Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
-  %zip2%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
+  %zip2%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 ) else (
-   %zip1%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
+  %zip1%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 )
 goto :eof
 
@@ -68,9 +66,9 @@ if exist %CsSoFile% (
 md %SteamBkp%\BinBkp\Bin_CsSo
 Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
-  %zip2%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
+  %zip2%\7z.exe x -o%Steam%\Install %temp%\%Name%
 ) else (
-   %zip1%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
+  %zip1%\7z.exe x -o%Steam%\Install %temp%\%Name%
 )
 goto :eof
 
