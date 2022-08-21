@@ -3,9 +3,7 @@ echo --[For more information enter https://github.com/ViniciusRed/SourceServerDe
 setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
-call :BinBkp
 call :ChangeLog
-call :CsSo_Installed
 call :Check
 call :Clear
 pause
@@ -16,12 +14,12 @@ call :BinBkp
 call :Download_Resources
 call :Download
 call :Install_Resources
-timeout 3 > %temp%\InstallLog.txt
+timeout 3 >> %temp%\InstallLog.txt
 if exist "%CsSoFile%" (
   echo File CsSo exist [Yes] 
-  call :Install_Steam
 ) else (
   echo File CsSo exist [No]
+  call :Install_CsWarzone
 )
 goto :eof
 
@@ -30,12 +28,12 @@ call :BinBkp
 call :Download_Resources
 call :Download
 call :Install_Resources
-timeout 3 > %temp%\InstallLog.txt
+timeout 3 >> %temp%\InstallLog.txt
 if exist "%CsSoFile%" (
   echo File CsSo exist [Yes] 
-  call :Install_Steam
 ) else (
   echo File CsSo exist [No]
+  call :Install_Launcher
 )
 goto :eof
 
@@ -44,32 +42,53 @@ call :BinBkp
 call :Download_Resources
 call :Download
 call :Install_Resources
-timeout 3 > %temp%\InstallLog.txt
+timeout 3 >> %temp%\InstallLog.txt
 if exist "%CsSoFile%" (
   echo File CsSo exist [Yes] 
-  call :Install_Steam
 ) else (
   echo File CsSo exist [No]
+  call :Install_Steam
 )
+goto :eof
+
+:BkpSteam
+md %SteamBkp%\BinBkp
+md %SteamBkp%\BinBkp\Bin_Cstrike
+Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+pause
+goto :eof
+
+:BkpWarzone
+md %WarzoneBkp%\BinBkp
+md %WarzoneBkp%\BinBkp\Bin_Cstrike
+Xcopy %WarzoneBkp%\Bin %WarzoneBkp%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+pause
+goto :eof
+
+:BkpLauncher
+md %LauncherBkp%\BinBkp
+md %LauncherBkp%\BinBkp\Bin_Cstrike
+Xcopy %LauncherBkp%\Bin %LauncherBkp%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+pause
 goto :eof
 
 :BinBkp
 title BkpBin
 echo [BkpBin]
-if exist "%SteamBkp%\BinBkp" (
-  echo Yes
+if exist %SteamBkp%\BinBkp (
+  echo BinBkp Steam [Yes]
 ) else (
-  md %SteamBkp%\BinBkp
+  call :BkpSteam
 )
 if exist %CSWarzone%\BinBkp (
-  echo Yes 
+  echo BinBkp Warzone [Yes] 
 ) else (
-  md %CSWarzone%\BinBkp
+  call :BkpWarzone
 )
-if exist "%Launcher%\BinBkp" (
-  echo Yes 
+if exist %Launcher%\BinBkp (
+  echo BinBkp 7Launcher [Yes] 
 ) else (
-  md %Launcher%\BinBkp
+  call :BkpLauncher
 )
 goto :eof
 
@@ -128,7 +147,7 @@ if %choice% == 3 exit
 :CsSo_Installed
 title CsSo_Installed
 echo [CsSo_Installed]
-if exist "%Steam%\csso" (
+if exist %Steam%\csso (
   echo Steam CsSo Installed Yes 
   call :bin_steam
 ) else (
@@ -165,7 +184,7 @@ md C:\Windows\SoftwareDistribution
 %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %ChangeLog% "%temp%/%Name4%"
 echo [ChangeLog:]
 type %temp%\ChangeLog.txt
-timeout 5 > %temp%\InstallLog.txt
+timeout 5 >> %temp%\InstallLog.txt
 cls
 goto :eof
 
@@ -184,7 +203,7 @@ goto :eof
 
 :Check
 title Check Folder Game
-if exist "%Steam%" (
+if exist %Steam% (
   echo Folder Cs Source Steam exist [Yes] 
   call :Install_Steam
 ) else (
@@ -196,7 +215,7 @@ if exist %CSWarzone% (
 ) else (
   echo Folder CsWarzone exist [No]
 )
-if exist "%Launcher%" (
+if exist %Launcher% (
   echo Folder 7Launcher exist [Yes] 
   call :Install_Launcher
 ) else (
