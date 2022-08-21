@@ -3,6 +3,7 @@ echo --[For more information enter https://github.com/ViniciusRed/SourceServerDe
 setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
+call :BinBkp
 call :ChangeLog
 call :CsSo_Installed
 call :Check
