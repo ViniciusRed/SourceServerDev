@@ -52,6 +52,26 @@ if exist "%CsSoFile%" (
 )
 goto :eof
 
+:BinBkp
+title BkpBin
+echo [BkpBin]
+if exist "%SteamBkp%\BinBkp" (
+  echo Yes
+) else (
+  md %SteamBkp%\BinBkp
+)
+if exist %CSWarzone%\BinBkp (
+  echo Yes 
+) else (
+  md %CSWarzone%\BinBkp
+)
+if exist "%Launcher%\BinBkp" (
+  echo Yes 
+) else (
+  md %Launcher%\BinBkp
+)
+goto :eof
+
 :bin_steam
 title "Change bin"
 echo [Change bin]
