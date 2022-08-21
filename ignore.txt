@@ -7,3 +7,8 @@ if exist %%\ (
 ) else (
   echo No
 )
+
+### choice option
+set /p choice=
+if %choice% == 1 goto label1
+if %choice% == 2 goto label2

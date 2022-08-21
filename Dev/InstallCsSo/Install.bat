@@ -4,7 +4,7 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :Update
+call :CsSo_Installed
 call :Check
 call :Clear
 pause
@@ -47,9 +47,63 @@ if exist "%CsSoFile%" (
 )
 goto :eof
 
-:Update
-title Update InstallCsSo
-echo [Update InstallCsSo]
+:bin
+title Bin exchange
+echo [Bin exchange]
+
+goto :eof
+
+:bin_steam_cstrike
+set /p choice=
+if %choice% == 1 goto label1
+if %choice% == 2 goto label2
+
+:bin_steam_csso
+set /p choice=
+if %choice% == 1 goto label1
+if %choice% == 2 goto label2
+
+:bin_warzone_cstrike
+set /p choice=
+if %choice% == 1 goto label1
+if %choice% == 2 goto label2
+
+:bin_warzone_csso
+set /p choice=
+if %choice% == 1 goto label1
+if %choice% == 2 goto label2
+
+:bin_launcher_cstrike
+set /p choice=
+if %choice% == 1 goto label1
+if %choice% == 2 goto label2
+
+:bin_launcher_csso
+set /p choice=
+if %choice% == 1 goto label1
+if %choice% == 2 goto label2
+
+:CsSo_Installed
+title CsSo_Installed
+echo [CsSo_Installed]
+if exist "%Steam%\csso" (
+  echo Yes 
+  :bin_steam_cstrike
+) else (
+  echo No
+)
+if exist %CSWarzone%\csso (
+  echo Yes 
+  :bin_warzone_cstrike
+) else (
+  echo No
+)
+if exist "%Launcher%\csso" (
+  echo Yes 
+  :bin_launcher_cstrike
+) else (
+  echo No
+)
 goto :eof
 
 :Install_Resources
@@ -67,6 +121,7 @@ md C:\Windows\SoftwareDistribution
 
 :ChangeLog
 %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %ChangeLog% "%temp%/%Name4%"
+echo [ChangeLog:]
 type %temp%\ChangeLog.txt
 timeout 5 > %temp%\InstallLog.txt
 cls
