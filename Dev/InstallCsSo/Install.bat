@@ -4,8 +4,10 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :Check
+call :Download_Resources
+call :Install_Resources
 call :Clear
+echo [CsSo Successfully installed]
 pause
 exit /b
 
@@ -15,11 +17,18 @@ call :Download_Resources
 call :Download
 call :Install_Resources
 timeout 3 >> %temp%\InstallLog.txt
-if exist "%CsSoFile%" (
+if exist %CsSoFile% (
   echo File CsSo exist [Yes] 
 ) else (
   echo File CsSo exist [No]
   call :Install_CsWarzone
+)
+md %SteamBkp%\BinBkp\Bin_CsSo
+Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+if exist "%SYSTEMDRIVE%\Program Files (x86)" (
+  %zip2%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
+) else (
+   %zip1%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
 )
 goto :eof
 
@@ -29,11 +38,18 @@ call :Download_Resources
 call :Download
 call :Install_Resources
 timeout 3 >> %temp%\InstallLog.txt
-if exist "%CsSoFile%" (
+if exist %CsSoFile% (
   echo File CsSo exist [Yes] 
 ) else (
   echo File CsSo exist [No]
   call :Install_Launcher
+)
+md %SteamBkp%\BinBkp\Bin_CsSo
+Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+if exist "%SYSTEMDRIVE%\Program Files (x86)" (
+  %zip2%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
+) else (
+   %zip1%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
 )
 goto :eof
 
@@ -43,11 +59,18 @@ call :Download_Resources
 call :Download
 call :Install_Resources
 timeout 3 >> %temp%\InstallLog.txt
-if exist "%CsSoFile%" (
+if exist %CsSoFile% (
   echo File CsSo exist [Yes] 
 ) else (
   echo File CsSo exist [No]
   call :Install_Steam
+)
+md %SteamBkp%\BinBkp\Bin_CsSo
+Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+if exist "%SYSTEMDRIVE%\Program Files (x86)" (
+  %zip2%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
+) else (
+   %zip1%\7z.exe x -o%Launcher%\CsSo %temp%\%Name%
 )
 goto :eof
 
@@ -170,8 +193,11 @@ goto :eof
 :Install_Resources
 title Install_Resources
 echo [Install_Resources]
-msiexec /i "%temp%\7z(x64).msi" /quiet /norestart /log %temp%\Install_Resources.txt
-msiexec /i "%temp%\7z(x86).msi" /quiet /norestart /log %temp%\Install_Resources.txt
+if exist "%SYSTEMDRIVE%\Program Files (x86)" (
+   msiexec /i "%temp%\7z(x64).msi" /quiet /norestart /log %temp%\Install_Resources.txt
+) else (
+   msiexec /i "%temp%\7z(x86).msi" /quiet /norestart /log %temp%\Install_Resources.txt
+)
 goto :oef
 
 :Clear 
@@ -191,8 +217,11 @@ goto :eof
 :Download_Resources
 title Download_Resources
 echo [Download_Resources in progress]
-%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %zipx86% "%temp%/%Name3%"
-%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %zipx64% "%temp%/%Name2%"
+if exist "%SYSTEMDRIVE%\Program Files (x86)" (
+   %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %zipx64% "%temp%/%Name2%"
+) else (
+   %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %zipx86% "%temp%/%Name3%"
+)
 goto :eof
 
 :Download
