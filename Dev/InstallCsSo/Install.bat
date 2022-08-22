@@ -4,7 +4,7 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :bin_warzone
+call :Install_CsWarzone
 echo [CsSo Successfully installed]
 pause
 exit /b
