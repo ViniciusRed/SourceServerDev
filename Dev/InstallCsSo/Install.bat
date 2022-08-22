@@ -145,13 +145,13 @@ if %choice% == 1 (
   rd %SteamBkp%\bin /s /q
   md %SteamBkp%\bin
   Xcopy %SteamBkp%\BinBkp\Bin_Cstrike %SteamBkp%\bin /E /H /C /I >> %temp%\InstallLog.txt
-pause
-exit
+  cls
 )
 if %choice% == 2 (
   rd %SteamBkp%\bin /s /q
   md %SteamBkp%\bin
   Xcopy %SteamBkp%\BinBkp\Bin_CsSo %SteamBkp%\bin /E /H /C /I >> %temp%\InstallLog.txt
+  cls
 )
 if %choice% == 3 exit
 
@@ -166,13 +166,13 @@ if %choice% == 1 (
 rd %CSWarzone%\bin /s /q
   md %CSWarzone%\bin
   Xcopy %CSWarzone%\BinBkp\Bin_Cstrike %CSWarzone%\bin /E /H /C /I >> %temp%\InstallLog.txt
-pause
-exit
+cls
 )
 if %choice% == 2 (
   rd %CSWarzone%\bin /s /q
   md %CSWarzone%\bin
   Xcopy %CSWarzone%\BinBkp\Bin_CsSo %CSWarzone%\bin /E /H /C /I >> %temp%\InstallLog.txt
+  cls
 )
 if %choice% == 3 exit
 
@@ -187,14 +187,13 @@ if %choice% == 1 (
 rd %Launcher%\bin /s /q
   md %Launcher%\bin
   Xcopy %Launcher%\BinBkp\Bin_Cstrike %Launcher%\bin /E /H /C /I >> %temp%\InstallLog.txt
-pause
-exit
+  cls
 )
 if %choice% == 2 (
   rd %Launcher%\bin /s /q
   md %Launcher%\bin
   Xcopy %Launcher%\BinBkp\Bin_CsSo %Launcher%\bin /E /H /C /I >> %temp%\InstallLog.txt
-  pause
+  cls
 )
 if %choice% == 3 exit
 
