@@ -161,6 +161,7 @@ if %choice% == 2 (
   cls
 )
 if %choice% == 3 exit
+goto :eof
 
 :bin_warzone
 title "Change bin"
@@ -182,6 +183,7 @@ if %choice% == 2 (
   cls
 )
 if %choice% == 3 exit
+goto :eof
 
 :bin_launcher
 title "Change bin"
@@ -203,7 +205,7 @@ if %choice% == 2 (
   cls
 )
 if %choice% == 3 exit
-
+goto :eof
 
 :CsSo_Installed
 title CsSo_Installed
