@@ -28,8 +28,10 @@ md %CSWarzone%\BinBkp\Bin_CsSo
 md %CSWarzone%\csso
 Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
+  title "Extract CsSo"
   %zip2%\7z.exe x -o%CSWarzone%\Install %temp%\%Name%
 ) else (
+  title "Extract CsSo" 
   %zip1%\7z.exe x -o%CSWarzone%\Install %temp%\%Name%
 )
 Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\InstallLog.txt
@@ -56,8 +58,10 @@ md %Launcher%\BinBkp\Bin_CsSo
 md %Launcher%\csso
 Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
+  title "Extract CsSo" 
   %zip2%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 ) else (
+  title "Extract CsSo" 
   %zip1%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 )
 Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\InstallLog.txt
@@ -84,8 +88,10 @@ md %Steam%\csso
 md %SteamBkp%\BinBkp\Bin_CsSo
 Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
+  title "Extract CsSo"
   %zip2%\7z.exe x -o%Steam%\Install %temp%\%Name%
 ) else (
+  title "Extract CsSo"
   %zip1%\7z.exe x -o%Steam%\Install %temp%\%Name%
 )
 Xcopy %temp%\csso_release_1.0.1\csso %Steam%\csso /E /H /C /I >> %temp%\InstallLog.txt
