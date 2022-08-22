@@ -12,6 +12,7 @@ exit /b
 :Install_CsWarzone
 echo [Please check that you gave update on the CsWarzone]
 pause
+cls
 call :BinBkp
 call :Download_Resources
 call :Download
@@ -100,21 +101,18 @@ goto :eof
 md %SteamBkp%\BinBkp
 md %SteamBkp%\BinBkp\Bin_Cstrike
 Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
-pause
 goto :eof
 
 :BkpWarzone
 md %CSWarzone%\BinBkp
 md %CSWarzone%\BinBkp\Bin_Cstrike
 Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
-pause
 goto :eof
 
 :BkpLauncher
 md %Launcher%\BinBkp
 md %Launcher%\BinBkp\Bin_Cstrike
 Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
-pause
 goto :eof
 
 :BinBkp
@@ -261,7 +259,11 @@ goto :eof
 :Download
 title Download CsSo
 echo [Download CsSo in progress]
-%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %CsSo% "%temp%/%Name%"
+if exist %temp%\CsSo.7z (
+  echo CsSo Downloaded [Yes] 
+) else (
+  %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %CsSo% "%temp%/%Name%" 
+)
 goto :eof
 
 :Check
