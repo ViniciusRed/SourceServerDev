@@ -4,7 +4,7 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :Install_CsWarzone
+call :bin_warzone
 echo [CsSo Successfully installed]
 pause
 exit /b
@@ -143,7 +143,7 @@ goto :eof
 
 :bin_steam
 title "Change bin"
-echo [Change bin]
+echo [Steam Change bin]
 echo (1) "Change bin to cstrike"
 echo (2) "Change bin to csso"
 echo (3) "Exit"
@@ -164,7 +164,7 @@ if %choice% == 3 exit
 
 :bin_warzone
 title "Change bin"
-echo [Change bin]
+echo [CsWarzone Change bin]
 echo (1) "Change bin to cstrike"
 echo (2) "Change bin to csso"
 echo (3) "Exit"
@@ -185,7 +185,7 @@ if %choice% == 3 exit
 
 :bin_launcher
 title "Change bin"
-echo [Change bin]
+echo [7Launcher Change bin]
 echo (1) "Change bin to cstrike"
 echo (2) "Change bin to csso"
 echo (3) "Exit"
