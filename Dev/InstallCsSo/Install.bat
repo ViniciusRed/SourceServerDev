@@ -230,7 +230,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
 ) else (
    msiexec /i "%temp%\7z(x86).msi" /quiet /norestart /log %temp%\Install_Resources.txt
 )
-goto :oef
+goto :eof
 
 :Clear 
 rd %temp% /s /q
