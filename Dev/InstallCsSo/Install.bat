@@ -141,12 +141,16 @@ echo (2) "Change bin to csso"
 echo (3) "Exit"
 set /p choice=
 if %choice% == 1 (
-echo test
+  rd %SteamBkp%\bin /s /q
+  md %SteamBkp%\bin
+  Xcopy %SteamBkp%\BinBkp\Bin_Cstrike %SteamBkp%\bin /E /H /C /I >> %temp%\InstallLog.txt
 pause
 exit
 )
 if %choice% == 2 (
-  echo test
+  rd %SteamBkp%\bin /s /q
+  md %SteamBkp%\bin
+  Xcopy %SteamBkp%\BinBkp\Bin_CsSo %SteamBkp%\bin /E /H /C /I >> %temp%\InstallLog.txt
 )
 if %choice% == 3 exit
 
@@ -158,12 +162,16 @@ echo (2) "Change bin to csso"
 echo (3) "Exit"
 set /p choice=
 if %choice% == 1 (
-echo test
+rd %CSWarzone%\bin /s /q
+  md %CSWarzone%\bin
+  Xcopy %CSWarzone%\BinBkp\Bin_Cstrike %CSWarzone%\bin /E /H /C /I >> %temp%\InstallLog.txt
 pause
 exit
 )
 if %choice% == 2 (
-  echo test
+  rd %CSWarzone%\bin /s /q
+  md %CSWarzone%\bin
+  Xcopy %CSWarzone%\BinBkp\Bin_CsSo %CSWarzone%\bin /E /H /C /I >> %temp%\InstallLog.txt
 )
 if %choice% == 3 exit
 
@@ -175,12 +183,17 @@ echo (2) "Change bin to csso"
 echo (3) "Exit"
 set /p choice=
 if %choice% == 1 (
-echo test
+rd %Launcher%\bin /s /q
+  md %Launcher%\bin
+  Xcopy %Launcher%\BinBkp\Bin_Cstrike %Launcher%\bin /E /H /C /I >> %temp%\InstallLog.txt
 pause
 exit
 )
 if %choice% == 2 (
-  echo test
+  rd %Launcher%\bin /s /q
+  md %Launcher%\bin
+  Xcopy %Launcher%\BinBkp\Bin_CsSo %Launcher%\bin /E /H /C /I >> %temp%\InstallLog.txt
+  pause
 )
 if %choice% == 3 exit
 
