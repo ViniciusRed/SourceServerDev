@@ -4,7 +4,8 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :Install_CsWarzone
+call :CsSo_Installed
+call :Check
 echo [CsSo Successfully installed]
 pause
 exit /b
@@ -33,7 +34,7 @@ Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\Inst
 Xcopy %temp%\csso_release_1.0.1\bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I
 cls
 echo Please put it [-game csso] startup options
-timeout 8
+timeout 10
 goto :eof
 
 :Install_Launcher
@@ -60,7 +61,7 @@ Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\Insta
 Xcopy %temp%\csso_release_1.0.1\bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 cls
 echo Please put it [-game csso] startup options
-timeout 8
+timeout 10
 goto :eof
 
 :Install_Steam
@@ -89,7 +90,7 @@ taskkill /F /IM Steam.exe
 start "%systemdrive%\Program Files (x86)\Steam\steam.exe"
 cls
 echo Please put it [-Insecure] startup options
-timeout 8
+timeout 10
 goto :eof
 
 :BkpSteam
