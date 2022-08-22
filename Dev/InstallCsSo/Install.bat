@@ -34,6 +34,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   title "Extract CsSo" 
   "%zip1%\7z.exe" x -o%CSWarzone%\Install %temp%\%Name%
 )
+echo [A copies the files]
 Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I
 start "%Warzone%\css_launcher.exe"
@@ -64,6 +65,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   title "Extract CsSo" 
   "%zip1%\7z.exe" x -o%Launcher%\Install %temp%\%Name%
 )
+echo [A copies the files]
 Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 start %Launcher%\Run_CSS.exe
@@ -94,6 +96,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   title "Extract CsSo"
   "%zip1%\7z.exe" x -o%Steam%\Install %temp%\%Name%
 )
+echo [A copies the files]
 Xcopy %temp%\csso_release_1.0.1\csso %Steam%\csso /E /H /C /I >> %temp%\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 taskkill /F /IM Steam.exe
