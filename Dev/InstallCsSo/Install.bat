@@ -22,12 +22,15 @@ if exist %CsSoFile% (
   call :Install_CsWarzone
 )
 md %CSWarzone%\BinBkp\Bin_CsSo
+md %CSWarzone%\csso
 Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   %zip2%\7z.exe x -o%CSWarzone%\Install %temp%\%Name%
 ) else (
   %zip1%\7z.exe x -o%CSWarzone%\Install %temp%\%Name%
 )
+Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %temp%\csso_release_1.0.1\bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 goto :eof
 
 :Install_Launcher
@@ -43,12 +46,15 @@ if exist %CsSoFile% (
   call :Install_Launcher
 )
 md %Launcher%\BinBkp\Bin_CsSo
+md %Launcher%\csso
 Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   %zip2%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 ) else (
   %zip1%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 )
+Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %temp%\csso_release_1.0.1\bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 goto :eof
 
 :Install_Steam
@@ -63,6 +69,7 @@ if exist %CsSoFile% (
   echo File CsSo exist [No]
   call :Install_Steam
 )
+md %Steam%\csso
 md %SteamBkp%\BinBkp\Bin_CsSo
 Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
@@ -70,6 +77,8 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
 ) else (
   %zip1%\7z.exe x -o%Steam%\Install %temp%\%Name%
 )
+Xcopy %temp%\csso_release_1.0.1\csso %Steam%\csso /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %temp%\csso_release_1.0.1\bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 goto :eof
 
 :BkpSteam
