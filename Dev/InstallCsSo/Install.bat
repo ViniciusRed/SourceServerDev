@@ -32,6 +32,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
 )
 Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I
+start %Warzone%\css_launcher.exe
 cls
 echo Please put it [-game csso] startup options
 timeout 10
@@ -59,6 +60,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
 )
 Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+start %Launcher%\Run_CSS.exe
 cls
 echo Please put it [-game csso] startup options
 timeout 10
