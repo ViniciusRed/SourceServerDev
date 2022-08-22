@@ -18,7 +18,7 @@ call :Download_Resources
 call :Download
 call :Install_Resources
 timeout 3 >> %temp%\InstallLog.txt
-if exist %CsSoFile% (
+if exist %temp%\CsSo.7z (
   echo File CsSo exist [Yes] 
 ) else (
   echo File CsSo exist [No]
@@ -46,7 +46,7 @@ call :Download_Resources
 call :Download
 call :Install_Resources
 timeout 3 >> %temp%\InstallLog.txt
-if exist %CsSoFile% (
+if exist %temp%\CsSo.7z (
   echo File CsSo exist [Yes] 
 ) else (
   echo File CsSo exist [No]
@@ -74,7 +74,7 @@ call :Download_Resources
 call :Download
 call :Install_Resources
 timeout 3 >> %temp%\InstallLog.txt
-if exist %CsSoFile% (
+if exist %temp%\CsSo.7z (
   echo File CsSo exist [Yes] 
 ) else (
   echo File CsSo exist [No]
