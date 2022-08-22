@@ -30,7 +30,10 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   %zip1%\7z.exe x -o%CSWarzone%\Install %temp%\%Name%
 )
 Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\InstallLog.txt
-Xcopy %temp%\csso_release_1.0.1\bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %temp%\csso_release_1.0.1\bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I
+cls
+echo Please put it [-game csso] startup options
+timeout 8
 goto :eof
 
 :Install_Launcher
@@ -55,6 +58,9 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
 )
 Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+cls
+echo Please put it [-game csso] startup options
+timeout 8
 goto :eof
 
 :Install_Steam
@@ -79,6 +85,11 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
 )
 Xcopy %temp%\csso_release_1.0.1\csso %Steam%\csso /E /H /C /I >> %temp%\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+taskkill /F /IM Steam.exe
+start "%systemdrive%\Program Files (x86)\Steam\steam.exe"
+cls
+echo Please put it [-Insecure] startup options
+timeout 8
 goto :eof
 
 :BkpSteam
