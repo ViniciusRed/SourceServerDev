@@ -11,6 +11,7 @@ pause
 exit /b
 
 :Install_CsWarzone
+echo [Please check that you gave update on the CsWarzone]
 call :BinBkp
 call :Download_Resources
 call :Download
@@ -215,7 +216,7 @@ if exist %CSWarzone%\csso (
 ) else (
   echo CsWarzone CsSo Installed No
 )
-if exist "%Launcher%\csso" (
+if exist %Launcher%\csso (
   echo 7Launcher CsSo Installed Yes 
   call :bin_launcher
 ) else (
@@ -265,7 +266,7 @@ goto :eof
 
 :Check
 title Check Folder Game
-if exist %Steam% (
+if exist %SteamBkp% (
   echo Folder Cs Source Steam exist [Yes] 
   call :Install_Steam
 ) else (
