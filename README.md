@@ -1,9 +1,9 @@
 ## SourceServerDev
-
-![](http://img.shields.io/badge/status-In_Process-gren.png)
-![](http://img.shields.io/badge/Bug-1-red.png)
-![](http://img.shields.io/badge/Update-1-gren.png)
-![](http://img.shields.io/github/v/release/ViniciusRed/SourceServerDev?display_name=tag)
+![Status](https://img.shields.io/badge/status-In_Process-gren.png)
+![Bug](https://img.shields.io/badge/Bug-1-red.png)
+![Updates](https://img.shields.io/badge/Update-1-gren.png)
+![Releases](https://img.shields.io/github/v/release/ViniciusRed/SourceServerDev?display_name=tag)
+![Download](https://img.shields.io/github/downloads/ViniciusRed/SourceServerDev/total)
 ___
 ### State of Build
 <div align="center">
