@@ -268,7 +268,6 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
 goto :eof
 
 :DownloadKey
-@echo on
 title Picking the download Key
 echo [Picking the download Key]
 %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %KeyDownload% "%temp%\%Name5%"
