@@ -272,6 +272,7 @@ title Picking the download Key
 echo [Picking the download Key]
 %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %KeyDownload% "%temp%\%Name5%"
 findstr %KeyUrl% %temp%\%Name5% >> %temp%/key.cfg
+cscript %Name6% “%temp%/%Name5%” “%Key%” “%Key2%”
 pause
 goto :eof
 
