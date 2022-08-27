@@ -4,8 +4,7 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :CsSo_Installed
-call :Check
+call :Install_CsWarzone
 call :Clear >> %temp%\InstallLog.txt
 echo [CsSo Successfully installed]
 pause
@@ -32,10 +31,10 @@ md %CSWarzone%\csso
 Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   title "Extract CsSo"
-  "%zip2%\7z.exe" x -o%CSWarzone%\Install %temp%\%Name%
+  %zip2%\7z.exe x -o%CSWarzone%\Install %temp%\%Name%
 ) else (
   title "Extract CsSo" 
-  "%zip1%\7z.exe" x -o%CSWarzone%\Install %temp%\%Name%
+  %zip2%\7z.exe x -o%CSWarzone%\Install %temp%\%Name%
 )
 echo [A copies the files]
 Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\InstallLog.txt
@@ -64,10 +63,10 @@ md %Launcher%\csso
 Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   title "Extract CsSo" 
-  "%zip2%\7z.exe" x -o%Launcher%\Install %temp%\%Name%
+  %zip2%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 ) else (
   title "Extract CsSo" 
-  "%zip1%\7z.exe" x -o%Launcher%\Install %temp%\%Name%
+  %zip2%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 )
 echo [A copies the files]
 Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\InstallLog.txt
@@ -96,10 +95,10 @@ md %SteamBkp%\BinBkp\Bin_CsSo
 Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   title "Extract CsSo"
-  "%zip2%\7z.exe" x -o%Steam%\Install %temp%\%Name%
+  %zip2%\7z.exe x -o%Steam%\Install %temp%\%Name%
 ) else (
   title "Extract CsSo"
-  "%zip1%\7z.exe" x -o%Steam%\Install %temp%\%Name%
+  %zip2%\7z.exe x -o%Steam%\Install %temp%\%Name%
 )
 echo [A copies the files]
 Xcopy %temp%\csso_release_1.0.1\csso %Steam%\csso /E /H /C /I >> %temp%\InstallLog.txt
