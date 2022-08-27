@@ -30,10 +30,10 @@ md %CSWarzone%\BinBkp\Bin_CsSo
 md %CSWarzone%\csso
 Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
-  title "Extract CsSo"
+  title [Extract CsSo]
   %zip2%\7z.exe x -o%CSWarzone%\Install %temp%\%Name%
 ) else (
-  title "Extract CsSo" 
+  title [Extract CsSo] 
   %zip2%\7z.exe x -o%CSWarzone%\Install %temp%\%Name%
 )
 echo [A copies the files]
@@ -62,10 +62,10 @@ md %Launcher%\BinBkp\Bin_CsSo
 md %Launcher%\csso
 Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
-  title "Extract CsSo" 
+  title [Extract CsSo] 
   %zip2%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 ) else (
-  title "Extract CsSo" 
+  title [Extract CsSo] 
   %zip2%\7z.exe x -o%Launcher%\Install %temp%\%Name%
 )
 echo [A copies the files]
@@ -94,10 +94,10 @@ md %Steam%\csso
 md %SteamBkp%\BinBkp\Bin_CsSo
 Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
-  title "Extract CsSo"
+  title [Extract CsSo]
   %zip2%\7z.exe x -o%Steam%\Install %temp%\%Name%
 ) else (
-  title "Extract CsSo"
+  title [Extract CsSo]
   %zip2%\7z.exe x -o%Steam%\Install %temp%\%Name%
 )
 echo [A copies the files]
