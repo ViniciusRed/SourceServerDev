@@ -4,7 +4,7 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :Install_CsWarzone
+call :DownloadKey
 echo [CsSo Successfully installed]
 pause
 exit /b
@@ -237,9 +237,9 @@ goto :eof
 title Install_Resources
 echo [Install_Resources]
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
-   msiexec /i "%temp%\7z(x64).msi" /quiet /norestart /log %temp%\Install_Resources.txt
+   msiexec /i "%temp%\%Name2%" /quiet /norestart /log %temp%\Install_Resources.txt
 ) else (
-   msiexec /i "%temp%\7z(x86).msi" /quiet /norestart /log %temp%\Install_Resources.txt
+   msiexec /i "%temp%\%Name3%" /quiet /norestart /log %temp%\Install_Resources.txt
 )
 goto :eof
 
@@ -265,6 +265,14 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
 ) else (
    %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %zipx86% "%temp%/%Name3%"
 )
+goto :eof
+
+:DownloadKey
+title Picking the download Key
+echo [Picking the download Key]
+%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %KeyDownload% "%temp%\%Name5%"
+findstr %KeyUrl% %temp%\%Name5% >> %temp%/key.cfg
+pause
 goto :eof
 
 :Download
