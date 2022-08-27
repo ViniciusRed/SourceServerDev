@@ -4,7 +4,7 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :DownloadKey
+call :Install_CsWarzone
 echo [CsSo Successfully installed]
 pause
 exit /b
@@ -14,6 +14,7 @@ echo [Please check that you gave update on the CsWarzone]
 pause
 cls
 call :BinBkp
+call :DownloadKey
 call :Download_Resources
 call :Download
 call :Install_Resources
@@ -45,6 +46,7 @@ goto :eof
 
 :Install_Launcher
 call :BinBkp
+call :DownloadKey
 call :Download_Resources
 call :Download
 call :Install_Resources
@@ -76,6 +78,7 @@ goto :eof
 
 :Install_Steam
 call :BinBkp
+call :DownloadKey
 call :Download_Resources
 call :Download
 call :Install_Resources
@@ -271,10 +274,9 @@ goto :eof
 title Picking the download Key
 echo [Picking the download Key]
 %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %KeyDownload% "%temp%\%Name5%"
-findstr %KeyUrl% %temp%\%Name5% >> %temp%\Key.cfg
-cscript %Name6% "%temp%\%Name7%" %Key% %Key2%
+findstr %KeyUrl% %temp%\%Name5% > %temp%\Key.cfg
+cscript %Name6% "%temp%\%Name7%" %Key% %Key2% >> %temp%\InstallLog.txt
 for /f "delims==; tokens=1,2 eol=;" %%G in (%temp%\Key.cfg) do set %%G=%%H
-pause
 
 goto :eof
 
