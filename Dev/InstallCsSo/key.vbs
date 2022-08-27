@@ -4,7 +4,7 @@ Const ForWriting = 2
 strFileName = Wscript.Arguments(0)
 strOldText = Wscript.Arguments(1)
 strNewText = Wscript.Arguments(2)
-Set objFSO = CreateObject(“Scripting.FileSystemObject”)
+Set objFSO = CreateObject(“Scripting.FileSystemObject”) ="value not found"
 Set objFile = objFSO.OpenTextFile(strFileName, ForReading)
 strText = objFile.ReadAll
 objFile.Close
