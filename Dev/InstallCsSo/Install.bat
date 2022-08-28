@@ -113,21 +113,39 @@ timeout 10
 goto :eof
 
 :BkpSteam
-md %SteamBkp%\BinBkp
-md %SteamBkp%\BinBkp\Bin_Cstrike
-Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+if exist %SteamBkp%\ (
+  echo [Bkp Bin Cs Source]
+  md %SteamBkp%\BinBkp
+  md %SteamBkp%\BinBkp\Bin_Cstrike
+  Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+) else (
+  echo Cs Source Steam Installed [No]
+)
+
 goto :eof
 
 :BkpWarzone
-md %CSWarzone%\BinBkp
-md %CSWarzone%\BinBkp\Bin_Cstrike
-Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+if exist %%\ (
+  echo [Bkp Bin Cs Source] 
+  md %CSWarzone%\BinBkp
+  md %CSWarzone%\BinBkp\Bin_Cstrike
+  Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt 
+) else (
+  echo Cs Source Warzone Installed [No]
+)
+
 goto :eof
 
 :BkpLauncher
-md %Launcher%\BinBkp
-md %Launcher%\BinBkp\Bin_Cstrike
-Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+if exist %%\ (
+  echo [Bkp Bin Cs Source]
+  md %Launcher%\BinBkp
+  md %Launcher%\BinBkp\Bin_Cstrike
+  Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+) else (
+  echo Cs Source 7Launcher Installed [No]
+)
+
 goto :eof
 
 :BinBkp
