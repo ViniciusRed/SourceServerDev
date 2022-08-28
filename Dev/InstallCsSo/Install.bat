@@ -114,7 +114,7 @@ goto :eof
 
 :BkpSteam
 if exist %SteamBkp%\ (
-  echo [Bkp Bin Cs Source]
+  echo [Bkp Bin Cs Source Steam]
   md %SteamBkp%\BinBkp
   md %SteamBkp%\BinBkp\Bin_Cstrike
   Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
@@ -126,7 +126,7 @@ goto :eof
 
 :BkpWarzone
 if exist %%\ (
-  echo [Bkp Bin Cs Source] 
+  echo [Bkp Bin Cs Source Warzone] 
   md %CSWarzone%\BinBkp
   md %CSWarzone%\BinBkp\Bin_Cstrike
   Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt 
@@ -138,7 +138,7 @@ goto :eof
 
 :BkpLauncher
 if exist %%\ (
-  echo [Bkp Bin Cs Source]
+  echo [Bkp Bin Cs Source 7Launcher]
   md %Launcher%\BinBkp
   md %Launcher%\BinBkp\Bin_Cstrike
   Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
