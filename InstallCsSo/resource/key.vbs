@@ -1,11 +1,14 @@
 Const ForReading = 1
 Const ForWriting = 2
 
+strFileName = Wscript.Arguments(0)
+strOldText = Wscript.Arguments(1)
+strNewText = Wscript.Arguments(2)
 Set objFSO = CreateObject("Scripting.FileSystemObject")
-Set objFile = objFSO.OpenTextFile("InstallCsSo\Key.cfg", ForReading)
+Set objFile = objFSO.OpenTextFile(strFileName, ForReading)
 strText = objFile.ReadAll
 objFile.Close
-strNewText = Replace(strText, "{ window.location.href = 'https://download1580.mediafire.com/fzl34irqgzqg/ut9d6b580y34dl1/csso_release_1.0.1.7z'; }", "{ CsSo=https://download1580.mediafire.com/fzl34irqgzqg/ut9d6b580y34dl1/csso_release_1.0.1.7z; }")
-Set objFile = objFSO.OpenTextFile("InstallCsSo\Key.cfg", ForWriting)
+strNewText = Replace(strText, strOldText, strNewText)
+Set objFile = objFSO.OpenTextFile(strFileName, ForWriting)
 objFile.WriteLine strNewText
 objFile.Close

