@@ -1,5 +1,5 @@
 @echo off
-md %temp%\InstallCsSo & timeout 3 > %temp%\InstallCsSo\InstallLog.txt
+md %temp%\InstallCsSo & timeout 1 > %temp%\InstallCsSo\InstallLog.txt
 echo --[For more information enter https://github.com/ViniciusRed/SourceServerDev]--
 setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (Config.cfg) do set %%G=%%H
