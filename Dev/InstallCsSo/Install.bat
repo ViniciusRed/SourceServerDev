@@ -289,6 +289,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
 ) else (
    %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %zipx86% "%temp%/%Name3%"
 )
+%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %zipx86% "%temp%/%Name6%"
 goto :eof
 
 :DownloadKey
