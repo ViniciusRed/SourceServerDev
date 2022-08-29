@@ -33,7 +33,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   %zip2%\7z.exe x -o%temp% %temp%\%Name%
 ) else (
   title [Extract CsSo] 
-  %zip2%\7z.exe x -o%temp% %temp%\%Name%
+  %zip1%\7z.exe x -o%temp% %temp%\%Name%
 )
 echo [A copies the files]
 Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\InstallLog.txt
@@ -66,7 +66,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   %zip2%\7z.exe x -o%temp% %temp%\%Name%
 ) else (
   title [Extract CsSo] 
-  %zip2%\7z.exe x -o%temp% %temp%\%Name%
+  %zip1%\7z.exe x -o%temp% %temp%\%Name%
 )
 echo [A copies the files]
 Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\InstallLog.txt
@@ -99,7 +99,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   %zip2%\7z.exe x -o%temp% %temp%\%Name%
 ) else (
   title [Extract CsSo]
-  %zip2%\7z.exe x -o%temp% %temp%\%Name%
+  %zip1%\7z.exe x -o%temp% %temp%\%Name%
 )
 echo [A copies the files]
 Xcopy %temp%\csso_release_1.0.1\csso %Steam%\csso /E /H /C /I >> %temp%\InstallLog.txt
@@ -125,7 +125,7 @@ if exist %SteamBkp%\ (
 goto :eof
 
 :BkpWarzone
-if exist %%\ (
+if exist %CSWarzone%\ (
   echo [Bkp Bin Cs Source Warzone] 
   md %CSWarzone%\BinBkp
   md %CSWarzone%\BinBkp\Bin_Cstrike
@@ -137,7 +137,7 @@ if exist %%\ (
 goto :eof
 
 :BkpLauncher
-if exist %%\ (
+if exist %Launcher%\ (
   echo [Bkp Bin Cs Source 7Launcher]
   md %Launcher%\BinBkp
   md %Launcher%\BinBkp\Bin_Cstrike
