@@ -1,10 +1,11 @@
 @echo off
+md %temp%\InstallCsSo & timeout 3 > %temp%\InstallCsSo\InstallLog.txt
 echo --[For more information enter https://github.com/ViniciusRed/SourceServerDev]--
 setlocal
-for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
+for /f "delims==; tokens=1,2 eol=;" %%G in (Config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :KeyDownload
+call :DownloadKey
 pause
 exit /b
 
@@ -17,7 +18,7 @@ call :DownloadKey
 call :Download_Resources
 call :Download
 call :Install_Resources
-timeout 3 >> %temp%\InstallLog.txt
+timeout 3 >> %temp%\InstallCsSo\InstallLog.txt
 if exist %temp%\CsSo.7z (
   echo File CsSo exist [Yes] 
 ) else (
@@ -26,7 +27,7 @@ if exist %temp%\CsSo.7z (
 )
 md %CSWarzone%\BinBkp\Bin_CsSo
 md %CSWarzone%\csso
-Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   title [Extract CsSo]
   %zip2%\7z.exe x -o%temp% %temp%\%Name%
@@ -35,7 +36,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   %zip1%\7z.exe x -o%temp% %temp%\%Name%
 )
 echo [A copies the files]
-Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %temp%\csso_release_1.0.1\csso %CSWarzone%\csso /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %CSWarzone%\BinBkp\Bin_CsSo /E /H /C /I
 %CSWarzone%\css_launcher.exe
 cls
@@ -50,7 +51,7 @@ call :DownloadKey
 call :Download_Resources
 call :Download
 call :Install_Resources
-timeout 3 >> %temp%\InstallLog.txt
+timeout 3 >> %temp%\InstallCsSo\InstallLog.txt
 if exist %temp%\CsSo.7z (
   echo File CsSo exist [Yes] 
 ) else (
@@ -59,7 +60,7 @@ if exist %temp%\CsSo.7z (
 )
 md %Launcher%\BinBkp\Bin_CsSo
 md %Launcher%\csso
-Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   title [Extract CsSo] 
   %zip2%\7z.exe x -o%temp% %temp%\%Name%
@@ -68,7 +69,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   %zip1%\7z.exe x -o%temp% %temp%\%Name%
 )
 echo [A copies the files]
-Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %temp%\csso_release_1.0.1\csso %Launcher%\csso /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %Launcher%\BinBkp\Bin_CsSo /E /H /C /I
 %Launcher%\Run_CSS.exe
 cls
@@ -83,7 +84,7 @@ call :DownloadKey
 call :Download_Resources
 call :Download
 call :Install_Resources
-timeout 3 >> %temp%\InstallLog.txt
+timeout 3 >> %temp%\InstallCsSo\InstallLog.txt
 if exist %temp%\CsSo.7z (
   echo File CsSo exist [Yes] 
 ) else (
@@ -92,7 +93,7 @@ if exist %temp%\CsSo.7z (
 )
 md %Steam%\csso
 md %SteamBkp%\BinBkp\Bin_CsSo
-Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   title [Extract CsSo]
   %zip2%\7z.exe x -o%temp% %temp%\%Name%
@@ -101,7 +102,7 @@ if exist "%SYSTEMDRIVE%\Program Files (x86)" (
   %zip1%\7z.exe x -o%temp% %temp%\%Name%
 )
 echo [A copies the files]
-Xcopy %temp%\csso_release_1.0.1\csso %Steam%\csso /E /H /C /I >> %temp%\InstallLog.txt
+Xcopy %temp%\csso_release_1.0.1\csso %Steam%\csso /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
 Xcopy %temp%\csso_release_1.0.1\bin %SteamBkp%\BinBkp\Bin_CsSo /E /H /C /I 
 taskkill /F /IM Steam.exe
 start "%systemdrive%\Program Files (x86)\Steam\steam.exe"
@@ -116,7 +117,7 @@ if exist %SteamBkp%\ (
   echo [Bkp Bin Cs Source Steam]
   md %SteamBkp%\BinBkp
   md %SteamBkp%\BinBkp\Bin_Cstrike
-  Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+  Xcopy %SteamBkp%\Bin %SteamBkp%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
 ) else (
   echo Cs Source Steam Installed [No]
 )
@@ -128,7 +129,7 @@ if exist %CSWarzone%\ (
   echo [Bkp Bin Cs Source Warzone] 
   md %CSWarzone%\BinBkp
   md %CSWarzone%\BinBkp\Bin_Cstrike
-  Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt 
+  Xcopy %CSWarzone%\Bin %CSWarzone%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt 
 ) else (
   echo Cs Source Warzone Installed [No]
 )
@@ -140,7 +141,7 @@ if exist %Launcher%\ (
   echo [Bkp Bin Cs Source 7Launcher]
   md %Launcher%\BinBkp
   md %Launcher%\BinBkp\Bin_Cstrike
-  Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallLog.txt
+  Xcopy %Launcher%\Bin %Launcher%\BinBkp\Bin_Cstrike /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
 ) else (
   echo Cs Source 7Launcher Installed [No]
 )
@@ -177,13 +178,13 @@ set /p choice=
 if %choice% == 1 (
   rd %SteamBkp%\bin /s /q
   md %SteamBkp%\bin
-  Xcopy %SteamBkp%\BinBkp\Bin_Cstrike %SteamBkp%\bin /E /H /C /I >> %temp%\InstallLog.txt
+  Xcopy %SteamBkp%\BinBkp\Bin_Cstrike %SteamBkp%\bin /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
   cls
 )
 if %choice% == 2 (
   rd %SteamBkp%\bin /s /q
   md %SteamBkp%\bin
-  Xcopy %SteamBkp%\BinBkp\Bin_CsSo %SteamBkp%\bin /E /H /C /I >> %temp%\InstallLog.txt
+  Xcopy %SteamBkp%\BinBkp\Bin_CsSo %SteamBkp%\bin /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
   cls
 )
 if %choice% == 3 exit
@@ -199,13 +200,13 @@ set /p choice=
 if %choice% == 1 (
 rd %CSWarzone%\bin /s /q
   md %CSWarzone%\bin
-  Xcopy %CSWarzone%\BinBkp\Bin_Cstrike %CSWarzone%\bin /E /H /C /I >> %temp%\InstallLog.txt
+  Xcopy %CSWarzone%\BinBkp\Bin_Cstrike %CSWarzone%\bin /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
 cls
 )
 if %choice% == 2 (
   rd %CSWarzone%\bin /s /q
   md %CSWarzone%\bin
-  Xcopy %CSWarzone%\BinBkp\Bin_CsSo %CSWarzone%\bin /E /H /C /I >> %temp%\InstallLog.txt
+  Xcopy %CSWarzone%\BinBkp\Bin_CsSo %CSWarzone%\bin /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
   cls
 )
 if %choice% == 3 exit
@@ -221,13 +222,13 @@ set /p choice=
 if %choice% == 1 (
 rd %Launcher%\bin /s /q
   md %Launcher%\bin
-  Xcopy %Launcher%\BinBkp\Bin_Cstrike %Launcher%\bin /E /H /C /I >> %temp%\InstallLog.txt
+  Xcopy %Launcher%\BinBkp\Bin_Cstrike %Launcher%\bin /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
   cls
 )
 if %choice% == 2 (
   rd %Launcher%\bin /s /q
   md %Launcher%\bin
-  Xcopy %Launcher%\BinBkp\Bin_CsSo %Launcher%\bin /E /H /C /I >> %temp%\InstallLog.txt
+  Xcopy %Launcher%\BinBkp\Bin_CsSo %Launcher%\bin /E /H /C /I >> %temp%\InstallCsSo\InstallLog.txt
   cls
 )
 if %choice% == 3 exit
@@ -260,9 +261,9 @@ goto :eof
 title Install_Resources
 echo [Install_Resources]
 if exist "%SYSTEMDRIVE%\Program Files (x86)" (
-   msiexec /i "%temp%\%Name2%" /quiet /norestart /log %temp%\Install_Resources.txt
+   msiexec /i "%temp%\%Name2%" /quiet /norestart /log %temp%\InstallCsSo\Install_Resources.txt
 ) else (
-   msiexec /i "%temp%\%Name3%" /quiet /norestart /log %temp%\Install_Resources.txt
+   msiexec /i "%temp%\%Name3%" /quiet /norestart /log %temp%\InstallCsSo\Install_Resources.txt
 )
 goto :eof
 
@@ -273,10 +274,10 @@ rd /s /q C:\Windows\SoftwareDistribution
 md C:\Windows\SoftwareDistribution
 
 :ChangeLog
-%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %ChangeLog% "%temp%/%Name4%"
+%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %ChangeLog% "%temp%\InstallCsSo\%Name4%"
 echo [ChangeLog:]
-type %temp%\ChangeLog.txt
-timeout 5 >> %temp%\InstallLog.txt
+type %temp%\InstallCsSo\ChangeLog.txt
+timeout 5 >> %temp%\InstallCsSo\InstallLog.txt
 cls
 goto :eof
 
@@ -294,11 +295,11 @@ goto :eof
 @echo on
 title Picking the download Key
 echo [Picking the download Key]
-%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %KeyDownload% "%temp%\%Name5%"
-findstr %KeyUrl% %temp%\%Name5% > %temp%\Key.cfg
-%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %Key% "%temp%/%Name6%"
-cscript %temp%\%Name6% "%temp%\%Name7%" %Key% %Key2% >> %temp%\InstallLog.txt
-for /f "delims==; tokens=1,2 eol=;" %%G in (%temp%\Key.cfg) do set %%G=%%H
+%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %KeyDownload% "%temp%\InstallCsSo\%Name5%"
+findstr %KeyUrl% %temp%\InstallCsSo\%Name5% > %temp%\InstallCsSo\Key.cfg
+%SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %Key% "%temp%\InstallCsSo\%Name6%"
+cscript %temp%\InstallCsSo\%Name6% > %temp%\InstallCsSo\InstallLog.txt
+for /f "delims==; tokens=1,2 eol=;" %%G in (%temp%\InstallCsSo\Key.cfg) do set %%G=%%H
 echo %CsSo%
 pause
 goto :eof
