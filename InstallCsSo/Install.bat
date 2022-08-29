@@ -298,7 +298,7 @@ echo [Picking the download Key]
 %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %KeyDownload% "%temp%\%Name5%"
 findstr %KeyUrl% %temp%\%Name5% > %temp%\Key.cfg
 %SYSTEMROOT%\SYSTEM32\bitsadmin.exe /rawreturn /nowrap /transfer starter /dynamic /download /priority foreground %Key% "%temp%/%Name6%"
-cscript %Name6% "%temp%\%Name7%" %Key% %Key2% >> %temp%\InstallLog.txt
+cscript %temp%\%Name6% "%temp%\%Name7%" %Key% %Key2% >> %temp%\InstallLog.txt
 for /f "delims==; tokens=1,2 eol=;" %%G in (%temp%\Key.cfg) do set %%G=%%H
 echo %CsSo%
 
