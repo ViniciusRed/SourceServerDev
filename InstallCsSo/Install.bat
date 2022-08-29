@@ -4,8 +4,7 @@ setlocal
 for /f "delims==; tokens=1,2 eol=;" %%G in (config.cfg) do set %%G=%%H
 title Install Counter Strike Source Offensive
 call :ChangeLog
-call :CsSo_Installed
-call :Check
+call :KeyDownload
 pause
 exit /b
 
@@ -301,7 +300,7 @@ findstr %KeyUrl% %temp%\%Name5% > %temp%\Key.cfg
 cscript %temp%\%Name6% "%temp%\%Name7%" %Key% %Key2% >> %temp%\InstallLog.txt
 for /f "delims==; tokens=1,2 eol=;" %%G in (%temp%\Key.cfg) do set %%G=%%H
 echo %CsSo%
-
+pause
 goto :eof
 
 :Download
