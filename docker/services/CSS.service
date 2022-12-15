@@ -1,0 +1,10 @@
+[Unit]
+Description=Start_Server_CsSource
+Wants=network-online.target
+After=network.target
+
+[Service]
+ExecStart=/bin/bash /home/farofa/startcss.sh
+
+[Install]
+WantedBy=multi-user.target

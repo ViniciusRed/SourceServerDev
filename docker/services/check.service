@@ -1,0 +1,10 @@
+[Unit]
+Description=Check Update
+Wants=network-online.target
+After=network.target
+
+[Service]
+ExecStart=/bin/bash pacman-key --init && pacman -Syy && pacman -Syu
+
+[Install]
+WantedBy=multi-user.target

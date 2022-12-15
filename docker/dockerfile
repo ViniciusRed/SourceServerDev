@@ -1,22 +1,2 @@
+#Wait for code
 FROM archlinux
-
-# Set environment variables
-ENV USER root
-ENV HOME /root/css
-
-# Set working directory
-WORKDIR $HOME
-
-# Safety check
-RUN pacman-key --init
-
-# Testing Internet
-RUN ping -c 5 www.google.com
-
-# Updating Database
-RUN pacman -Syy && pacman Syu
-
-# Install package to run the server
-RUN pacman -S neofetch
-RUN neofetch
-RUN dir 
