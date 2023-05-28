@@ -7,6 +7,7 @@ set -e
 shopt -s extglob
 
 SERVER_DIR="${HOME}/css"
+NONSTEAM_DIR="${HOME}/nonsteam/"
 SERVER_INSTALLED_LOCK_FILE="${SERVER_DIR}/installed.lock"
 SERVER_NONSTEAM_LOCK_FILE="${SERVER_DIR}/nonsteam.lock"
 
@@ -27,7 +28,7 @@ install()
 {
     echo '> Installing Server'
 
-    set +x
+    set -x
 
     steamcmd \
     +force_install_dir $SERVER_DIR \
@@ -44,54 +45,43 @@ start()
 {
     echo '> Starting Server ...'
 
+    set -x
+
     additionalParams=""
 
     if [ $DEBUG ]; then
-       additionalParams+=" -debug"
+        additionalParams+=" -debug"
     fi
 
-    if [ "${ENABLE_INSECURE}" = "true" ]; then
+    if [ $ENABLE_INSECURE = true ]; then
         additionalParams+=" -insecure"
     fi
 
     if [ "${SERVER_LAN}" = "1" ]; then
-        additionalParams+=" +sv_lan ${SERVER_LAN}"
+        additionalParams+=" +sv_lan $SERVER_LAN"
     fi
 
-    if [ -n "${SERVER_PASSWORD}" ]; then
-        additionalParams+=" +sv_password ${SERVER_PASSWORD}"
-    fi
-
-    if [ -n "${SERVER_HOSTNAME}" ]; then
+    if [ ! -z "${SERVER_HOSTNAME}" ]; then
         additionalParams+=" +hostname \"$SERVER_HOSTNAME\""
+        additionalParams+=
     fi
 
-    if [ -n "${SERVER_PORT}" ]; then
-        additionalParams+=" +port ${SERVER_PORT}"
+    if [ ! -z "${SERVER_MAP}" ]; then
+        additionalParams+=" +map $SERVER_MAP"
     fi
 
-    if [ -n "${SOURCETV_PORT}" ]; then
-        additionalParams+=" +tv_port ${SOURCETV_PORT}"
+    if [ ! -z "${SOURCETV_PORT}" ]; then
+        additionalParams+=" +tv_port $SOURCETV_PORT"
     fi
-
-    if [ -n "${RCON_PASSWORD}" ]; then
-        additionalParams+=" +rcon_password ${RCON_PASSWORD}"
-    fi
-
-    if [ -n "${SERVER_MAP}" ]; then
-        additionalParams+=" +map ${SERVER_MAP}"
-    fi
-
-    if [ -n "${MAX_PLAYERS}" ]; then
-        additionalParams+=" +maxplayers ${MAX_PLAYERS}"
-    fi
-
-    set -x
 
     $SERVER_DIR/srcds_run \
     -game cstrike \
     -console \
+    +ip 0.0.0.0 \
+    -port "$SERVER_PORT" \
+    +maxplayers "$MAX_PLAYERS" \
     $additionalParams
+
 
 }
 
@@ -103,6 +93,7 @@ crackserver_if_needs() {
             mv $SERVER_DIR/bin/steamclient.so $SERVER_DIR/bin/steamclient_valve.so
             cp -ar $HOME/nonsteam/* $SERVER_DIR
             echo '> Done';
+            rm -r $NONSTEAM_DIR
             touch $SERVER_NONSTEAM_LOCK_FILE
             sleep 2
         fi
