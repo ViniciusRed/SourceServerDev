@@ -32,16 +32,17 @@ install()
     +app_update 232330 validate \
     +quit
 
-
-    mv $SERVER_DIR/bin/steamclient.so $SERVER_DIR/bin/steamclient_valve.so
-
-    cp -ar $HOME/nonsteam/* $SERVER_DIR
+    if [ "${SERVER_NONSTEAM}" = "true" ]; then
+        crackserver
+    fi
 
     touch $SERVER_INSTALLED_LOCK_FILE
 }
 
 crackserver() {
-    start
+    mv $SERVER_DIR/bin/steamclient.so $SERVER_DIR/bin/steamclient_valve.so
+
+    cp -ar $HOME/nonsteam/* $SERVER_DIR
 }
 
 start()
