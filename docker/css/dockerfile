@@ -2,6 +2,7 @@ FROM archlinux
 
 ENV USER root
 ENV HOME /root/ServerCSS
+
 WORKDIR $HOME
 
 COPY packages/*.pkg.tar.zst $HOME/packages/
@@ -12,22 +13,14 @@ RUN rm -r packages
 ADD ./config.cfg config.cfg
 ADD ./server.sh server.sh
 
-EXPOSE $SERVER_PORT
-EXPOSE $SOURCETV_PORT
-
-
-# steamcmd
-
 COPY preinstall/nonsteam/ $HOME/nonsteam
 COPY preinstall/cstrike/ $HOME/css/cstrike
 
-#copy maps
 COPY preinstall/maps/ $HOME/css/cstrike/maps
 ADD cfg/ $HOME/css/cstrike/cfg
 
 VOLUME [ "/root/ServerCSS/" ]
 
 RUN chmod +x ./server.sh
-#RUN chmod +x ./config.cfg
 
 CMD ./server.sh

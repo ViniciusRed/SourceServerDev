@@ -8,6 +8,7 @@ shopt -s extglob
 
 SERVER_DIR="${HOME}/css"
 SERVER_INSTALLED_LOCK_FILE="${SERVER_DIR}/installed.lock"
+SERVER_NONSTEAM_LOCK_FILE="${SERVER_DIR}/nonsteam.lock"
 
 install_or_update() {
     if [ -f "$SERVER_INSTALLED_LOCK_FILE" ]; then
@@ -26,22 +27,17 @@ install()
 {
     echo '> Installing Server'
 
+    set +x
+
     steamcmd \
     +force_install_dir $SERVER_DIR \
     +login anonymous \
     +app_update 232330 validate \
     +quit
 
-
-    mv $SERVER_DIR/bin/steamclient.so $SERVER_DIR/bin/steamclient_valve.so
-
-    cp -ar $HOME/nonsteam/* $SERVER_DIR
+    set +x
 
     touch $SERVER_INSTALLED_LOCK_FILE
-}
-
-crackserver() {
-    start
 }
 
 start()
@@ -50,7 +46,7 @@ start()
 
     additionalParams=""
 
-    if [ "${DEBUG}" = "true" ]; then
+    if [ $DEBUG ]; then
        additionalParams+=" -debug"
     fi
 
@@ -99,14 +95,24 @@ start()
 
 }
 
+crackserver_if_needs() {
+    if [ ! -f "$SERVER_NONSTEAM_LOCK_FILE" ]; then
+        if [ $SERVER_NONSTEAM ]; then
+            sleep 2
+            echo '> Cracking Server';
+            mv $SERVER_DIR/bin/steamclient.so $SERVER_DIR/bin/steamclient_valve.so
+            cp -ar $HOME/nonsteam/* $SERVER_DIR
+            echo '> Done';
+            touch $SERVER_NONSTEAM_LOCK_FILE
+            sleep 2
+        fi
+    fi
+}
 
 if [ ! -z $1 ]; then
     $1
 else
-    if [ "${SERVER_NONSTEAM}" = "true" ]; then
-        crackserver
-    else
-        install_or_update
-        start
-    fi
+    install_or_update
+    crackserver_if_needs
+    start
 fi
