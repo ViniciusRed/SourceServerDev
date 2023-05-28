@@ -10,7 +10,7 @@ ___
 
 ```CSS
 [Install CsSo] = [In Test]
-[Install Server] = [In Wait]
+[Install Server] = [In Test (css)]
 [CsSoMod] = [In Wait]
 [MetaMod CsSo] = [In Wait]
 ```
