@@ -8,6 +8,8 @@ shopt -s extglob
 
 SERVER_DIR="${HOME}/css"
 NONSTEAM_DIR="${HOME}/nonsteam/"
+ARCHIVES_DIR="${HOME}/archives/"
+CFG_DIR="${HOME}/cfg/"
 SERVER_INSTALLED_LOCK_FILE="${SERVER_DIR}/installed.lock"
 SERVER_NONSTEAM_LOCK_FILE="${SERVER_DIR}/nonsteam.lock"
 
@@ -36,6 +38,12 @@ install()
     +app_update 232330 validate \
     +quit
 
+    for f in $ARCHIVES_DIR/*.tar.gz; do tar -xzvf ${f} --directory $SERVER_DIR/cstrike/; done
+    rm -r $ARCHIVES_DIR
+
+    cp -ar $CFG_DIR/* $SERVER_DIR
+    rm -r $CFG_DIR
+
     set +x
 
     touch $SERVER_INSTALLED_LOCK_FILE
@@ -61,17 +69,19 @@ start()
         additionalParams+=" +sv_lan $SERVER_LAN"
     fi
 
+    if [ ! -z "${RCON_PASSWORD}" ]; then
+        additionalParams+=" +rcon_password \"$RCON_PASSWORD\""
+        additionalParams+=
+    fi
+
     if [ ! -z "${SERVER_HOSTNAME}" ]; then
         additionalParams+=" +hostname \"$SERVER_HOSTNAME\""
         additionalParams+=
     fi
+    
 
     if [ ! -z "${SERVER_MAP}" ]; then
         additionalParams+=" +map $SERVER_MAP"
-    fi
-
-    if [ ! -z "${SOURCETV_PORT}" ]; then
-        additionalParams+=" +tv_port $SOURCETV_PORT"
     fi
 
     $SERVER_DIR/srcds_run \
@@ -81,8 +91,6 @@ start()
     -port "$SERVER_PORT" \
     +maxplayers "$MAX_PLAYERS" \
     $additionalParams
-
-
 }
 
 crackserver_if_needs() {
