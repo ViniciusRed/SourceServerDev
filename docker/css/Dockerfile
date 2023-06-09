@@ -10,17 +10,14 @@ RUN pacman -Sy git wget bottom gdb nmap --noconfirm
 RUN pacman -U packages/*.pkg.tar.zst --noconfirm
 RUN rm -r packages
 
-EXPOSE 27015
-EXPOSE 27020
-
 ADD ./config.cfg config.cfg
 ADD ./server.sh server.sh
 
+COPY preinstall/archives/ $HOME/archives
 COPY preinstall/nonsteam/ $HOME/nonsteam
 COPY preinstall/cstrike/ $HOME/css/cstrike
-
 COPY preinstall/maps/ $HOME/css/cstrike/maps
-ADD cfg/ $HOME/css/cstrike/cfg
+COPY preinstall/cfg/ $HOME/cfg
 
 VOLUME [ "/root/ServerCSS/" ]
 
