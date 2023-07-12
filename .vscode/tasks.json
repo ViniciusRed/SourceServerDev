@@ -6,7 +6,7 @@
         {
             "label": "Build Image",
             "type": "shell",
-            "command": "cd docker && docker build . -t source_arch:latest --no-cache --network=host --compress",
+            "command": "cd docker/css && docker build . -t source_arch:latest --no-cache --network=host --compress",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

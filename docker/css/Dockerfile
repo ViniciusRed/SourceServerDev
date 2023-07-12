@@ -6,7 +6,6 @@ WORKDIR $HOME
 
 COPY packages/*.pkg.tar.zst $HOME/packages/
 
-ADD ./nonsteam.sh nonsteam.sh
 ADD ./entrypoint.sh entrypoint.sh
 
 ENV CSS_HOSTNAME Counter-Strike Source Dedicated Server
@@ -37,6 +36,5 @@ ADD cfg/ $HOME/css/cstrike/cfg
 VOLUME [ "/root/ServerCSS/" ]
 
 RUN chmod +x ./entrypoint.sh
-# RUN chmod +x ./nonsteam.sh
 
 CMD ./entrypoint.sh
