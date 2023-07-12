@@ -2,25 +2,41 @@ FROM archlinux
 
 ENV USER root
 ENV HOME /root/ServerCSS
-
 WORKDIR $HOME
 
 COPY packages/*.pkg.tar.zst $HOME/packages/
-RUN pacman -Sy git wget bottom gdb nmap --noconfirm
+
+ADD ./nonsteam.sh nonsteam.sh
+ADD ./entrypoint.sh entrypoint.sh
+
+ENV CSS_HOSTNAME Counter-Strike Source Dedicated Server
+ENV CSS_PASSWORD ""
+ENV SERVER_PORT 27015
+ENV SOURCETV_PORT 27020
+
+ENV RCON_PASSWORD mysup3rs3cr3tpassw0rd
+ENV NO_STEAM true
+
+EXPOSE $SERVER_PORT
+EXPOSE $SOURCETV_PORT
+
+RUN pacman -Sy git wget --noconfirm
+
 RUN pacman -U packages/*.pkg.tar.zst --noconfirm
-RUN rm -r packages
 
-ADD ./config.cfg config.cfg
-ADD ./server.sh server.sh
+# steamcmd
+RUN steamcmd +force_install_dir $HOME/css +login anonymous +app_update 232330 validate +quit
 
-COPY preinstall/archives/ $HOME/archives
-COPY preinstall/nonsteam/ $HOME/nonsteam
+RUN mv $HOME/css/bin/steamclient.so $HOME/css/bin/steamclient_valve.so
+COPY preinstall/nonsteam/ $HOME/css/
 COPY preinstall/cstrike/ $HOME/css/cstrike
 COPY preinstall/maps/ $HOME/css/cstrike/maps
-COPY preinstall/cfg/ $HOME/cfg
+#copy maps
+ADD cfg/ $HOME/css/cstrike/cfg
 
 VOLUME [ "/root/ServerCSS/" ]
 
-RUN chmod +x ./server.sh
+RUN chmod +x ./entrypoint.sh
+# RUN chmod +x ./nonsteam.sh
 
-CMD ./server.sh
+CMD ./entrypoint.sh
