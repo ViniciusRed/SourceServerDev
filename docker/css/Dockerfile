@@ -4,37 +4,23 @@ ENV USER root
 ENV HOME /root/ServerCSS
 WORKDIR $HOME
 
-COPY packages/*.pkg.tar.zst $HOME/packages/
+COPY pacman.conf /etc/
+COPY packages/*pkg.tar.zst $HOME
 
-ADD ./entrypoint.sh entrypoint.sh
+RUN pacman -Syu git wget tar unzip gdb lib32-zlib lib32-curl curl --noconfirm && pacman -U *.pkg.tar.zst --noconfirm && pacman -Scc --noconfirm && rm -r *.pkg.tar.zst 
 
-ENV CSS_HOSTNAME Counter-Strike Source Dedicated Server
-ENV CSS_PASSWORD ""
-ENV SERVER_PORT 27015
-ENV SOURCETV_PORT 27020
+ADD ./server.sh server.sh
+ADD ./addons.sh addons.sh
+ADD ./config.cfg config.cfg
+ADD ./fastdl.py fastdl.py
 
-ENV RCON_PASSWORD mysup3rs3cr3tpassw0rd
-ENV NO_STEAM true
+RUN chmod +x ./server.sh && chmod +x ./addons.sh
 
-EXPOSE $SERVER_PORT
-EXPOSE $SOURCETV_PORT
+COPY preinstall/nonsteam/ $HOME/nonsteam
 
-RUN pacman -Sy git wget --noconfirm
-
-RUN pacman -U packages/*.pkg.tar.zst --noconfirm
-
-# steamcmd
-RUN steamcmd +force_install_dir $HOME/css +login anonymous +app_update 232330 validate +quit
-
-RUN mv $HOME/css/bin/steamclient.so $HOME/css/bin/steamclient_valve.so
-COPY preinstall/nonsteam/ $HOME/css/
-COPY preinstall/cstrike/ $HOME/css/cstrike
-COPY preinstall/maps/ $HOME/css/cstrike/maps
-#copy maps
-ADD cfg/ $HOME/css/cstrike/cfg
+ADD preinstall/cfg/*.cfg $HOME/css/cstrike/cfg/
 
 VOLUME [ "/root/ServerCSS/" ]
 
-RUN chmod +x ./entrypoint.sh
-
-CMD ./entrypoint.sh
+ENTRYPOINT [ "./server.sh" ]
+SHELL [ "./server.sh" ] 
