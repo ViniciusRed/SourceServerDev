@@ -53,7 +53,7 @@ function extract_files {
     local file=$1
     local destination=$2
 
-    tar -xzvf "$file" -C "$destination" $SOURCEMOD_TAR_ARG >>extract.log
+    tar -xzvf "$file" -C "$destination" $SOURCEMOD_TAR_ARG >> /dev/null
     if [ $? -eq 0 ]; then
         echo "> Completed extraction."
     else
@@ -103,7 +103,7 @@ fi
 
 # Check if there are updates of the Metamod
 if [ -f "$ADDONS_INSTALLED_LOCK_FILE" ]; then
-    echo ">  Checking updates Metamod..."
+    echo "> Checking updates Metamod..."
     if check_update "$installed_metamod_version" "$installed_metamod_gitcommit" "$metamod_url"; then
         echo "> Metamod is up to date."
     else

@@ -53,7 +53,7 @@ install() {
 }
 
 start() {
-
+    
     ./addons.sh $SOURCEMOD_VERSION
     echo '> Starting FastDl ...'
     export FASTDL_PORT=$FASTDL_PORT
@@ -116,6 +116,14 @@ crackserver_if_needs() {
     fi
 }
 
+preset_or_update() {
+    if [ -f "$SERVER_PRESET_LOCK_FILE" ]; then
+        update_preset
+    else
+        preset
+    fi
+}
+
 function extract_zip {
     unzip "$1"
 }
@@ -130,32 +138,73 @@ preset_extract() {
     # and "grep" to filter files with the desired extensions
     local dir=$SERVER_DIR/cstrike
     local file=$(ls "$dir" | grep -E '\.zip$|\.tar\.gz$|\.tar\.xz$|\.tar\.bz2$')
+    local type1=$(basename "$file" .zip)
+    local type2=$(basename "$file" .tar.gz | sed 's/\.tar\.xz$//;s/\.tar\.bz2$//')
+
     # Loop through the found files and perform the corresponding extraction
     for file in $file; do
         way_complete="$dir/$file"
         case "$file" in
         *.zip)
-            echo "Extracting $file..."
+            echo "> Extracting $file..."
             extract_zip "$way_complete"
-            cd $(basename "$file" .zip)
+            cd $type1
+            echo "> Copying Files"
+            cp -r . "$dir" && cd .. 
+            rm -r $type1
             ;;
         *.tar.gz | *.tar.xz | *.tar.bz2)
-            echo "Extracting $file..."
+            echo "> Extracting $file..."
             extract_tar "$way_complete"
-            cd $(basename "$file" .tar.gz | sed 's/\.tar\.xz$//;s/\.tar\.bz2$//')
+            cd $type2
+             echo "> Copying Files"
+            cp -r . "$dir" && cd .. 
+            rm -r $type2
             ;;
         *)
-            echo "Unknown extension for the file $file. Ignoring..."
+            echo "> Unknown extension for the file $file. Ignoring..."
             ;;
         esac
         rm -r $way_complete
     done
 }
 
-preset_install() {
+# Function to update the repository
+update_git_repo() {
+    git pull origin main
+}
 
+update_preset() {
+    source $SERVER_DIR/preset.cfg
+
+# Check if the directory is a valid git repository
+if [ -d "$PRESET_FOLDER/.git" ]; then
+    # Navega para o diretório do repositório
+    cd "$PRESET_FOLDER"
+    
+    # Check if there are updates in the Git repository
+    git fetch origin main
+    LOCAL=$(git rev-parse @)
+    REMOTE=$(git rev-parse @{u})
+    
+    if [ "$LOCAL" = "$REMOTE" ]; then
+        echo "> The repository is already updated. No necessary update."
+    else
+        echo "> There are updates available. Updating the repository ..."
+        update_git_repo
+        echo "> Successful updated repository!"
+        echo '> Updating Preset'
+        cp -r . "$SERVER_DIR/cstrike" && cd ..
+    fi
+else
+    echo "> Invalid directory or not is a git repository."
+fi
+}
+
+preset_install() {
+    local folder_git=$(basename "$1" .git)
     if [ "$PRESET_NOGIT" = "none" ]; then
-        git clone "$1" && cd "$(basename "$1" .git)"
+        git clone "$1" && cd "$folder_git" && echo preset_folder=$folder_git > $SERVER_DIR/preset.cfg
     else
         echo "> Using the external preset"
         wget "$1"
@@ -166,8 +215,6 @@ preset_install() {
         else
             echo "> Extracting the files"
             preset_extract
-            echo "> Copying Files"
-            cp -r . "$SERVER_DIR/cstrike" && cd ..
             echo "> External Preset Installed"
         fi
         touch $SERVER_PRESET_LOCK_FILE
@@ -200,6 +247,6 @@ if [ ! -z $1 ]; then
 else
     install_or_update
     crackserver_if_needs
-    preset
+    preset_or_update
     start
 fi

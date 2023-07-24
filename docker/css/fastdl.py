@@ -70,7 +70,7 @@ class FastDownloadHandler(http.server.SimpleHTTPRequestHandler):
 
 try:
     with socketserver.TCPServer(("", FASTDL_PORT), FastDownloadHandler) as httpd:
-        print(f"Server running at the door {FASTDL_PORT}. To download, access http://hostip:{FASTDL_PORT}/" )
+        print(f"FastDl running at the door {FASTDL_PORT}. To download, access http://hostip:{FASTDL_PORT}/" )
         httpd.serve_forever()
 except OSError as e:
     print(f"Error: The port {FASTDL_PORT} is already in use by another process.")
