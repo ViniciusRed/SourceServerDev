@@ -18,6 +18,7 @@ NONSTEAM_DIR="${HOME}/nonsteam/"
 SERVER_INSTALLED_LOCK_FILE="${SERVER_DIR}/installed.lock"
 SERVER_NONSTEAM_LOCK_FILE="${SERVER_DIR}/nonsteam.lock"
 SERVER_PRESET_LOCK_FILE="${SERVER_DIR}/preset.lock"
+ADDONS_INSTALLED_LOCK_FILE="${SERVER_DIR}/cstrike/addons/addons.lock"
 
 install_or_update() {
     if [ -f "$SERVER_INSTALLED_LOCK_FILE" ]; then
@@ -53,7 +54,7 @@ install() {
 }
 
 start() {
-    
+
     ./addons.sh $SOURCEMOD_VERSION
     echo '> Starting FastDl ...'
     export FASTDL_PORT=$FASTDL_PORT
@@ -117,10 +118,14 @@ crackserver_if_needs() {
 }
 
 preset_or_update() {
-    if [ -f "$SERVER_PRESET_LOCK_FILE" ]; then
-        update_preset
+    if [ -f "$ADDONS_INSTALLED_LOCK_FILE" ]; then
+        if [ -f "$SERVER_PRESET_LOCK_FILE" ]; then
+            update_preset
+        else
+            preset
+        fi
     else
-        preset
+        echo "> Addons not installed. preset_install will not be executed"
     fi
 }
 
@@ -150,15 +155,15 @@ preset_extract() {
             extract_zip "$way_complete"
             cd $type1
             echo "> Copying Files"
-            cp -r . "$dir" && cd .. 
+            cp -r . "$dir" && cd ..
             rm -r $type1
             ;;
         *.tar.gz | *.tar.xz | *.tar.bz2)
             echo "> Extracting $file..."
             extract_tar "$way_complete"
             cd $type2
-             echo "> Copying Files"
-            cp -r . "$dir" && cd .. 
+            echo "> Copying Files"
+            cp -r . "$dir" && cd ..
             rm -r $type2
             ;;
         *)
@@ -177,68 +182,67 @@ update_git_repo() {
 update_preset() {
     source $SERVER_DIR/preset.cfg
 
-# Check if the directory is a valid git repository
-if [ -d "$PRESET_FOLDER/.git" ]; then
-    # Navega para o diretório do repositório
-    cd "$PRESET_FOLDER"
-    
-    # Check if there are updates in the Git repository
-    git fetch origin main
-    LOCAL=$(git rev-parse @)
-    REMOTE=$(git rev-parse @{u})
-    
-    if [ "$LOCAL" = "$REMOTE" ]; then
-        echo "> The repository is already updated. No necessary update."
+    # Check if the directory is a valid git repository
+    if [ -d "$PRESET_FOLDER/.git" ]; then
+        # Navega para o diretório do repositório
+        cd "$PRESET_FOLDER"
+
+        # Check if there are updates in the Git repository
+        git fetch origin main
+        LOCAL=$(git rev-parse @)
+        REMOTE=$(git rev-parse @{u})
+
+        if [ "$LOCAL" = "$REMOTE" ]; then
+            echo "> The repository is already updated. No necessary update."
+        else
+            echo "> There are updates available. Updating the repository ..."
+            update_git_repo
+            echo "> Successful updated repository!"
+            echo '> Updating Preset'
+            cp -r PresetsServer/css/$PRESET/. "$SERVER_DIR/cstrike" && cd ..
+        fi
     else
-        echo "> There are updates available. Updating the repository ..."
-        update_git_repo
-        echo "> Successful updated repository!"
-        echo '> Updating Preset'
-        cp -r . "$SERVER_DIR/cstrike" && cd ..
+        echo "> Invalid directory or not is a git repository."
     fi
-else
-    echo "> Invalid directory or not is a git repository."
-fi
 }
 
 preset_install() {
     local folder_git=$(basename "$1" .git)
     if [ "$PRESET_NOGIT" = "none" ]; then
-        git clone "$1" && cd "$folder_git" && echo preset_folder=$folder_git > $SERVER_DIR/preset.cfg
+        git clone --no-checkout $1 && cd "$folder_git" && echo PRESET_FOLDER=$folder_git >$SERVER_DIR/preset.cfg
+        git sparse-checkout init --cone
+        git sparse-checkout set $2
+        git checkout @
+        echo "> Copying Files"
+        cp -r PresetsServer/css/$PRESET/. "$SERVER_DIR/cstrike" && cd ..
+        echo "> Preset Installed"
     else
         echo "> Using the external preset"
-        wget "$1"
-        if [ "$PRESET_NOGIT" = "none" ]; then
-            echo "> Copying Files"
-            cp -r . "$SERVER_DIR/cstrike" && cd..
-            echo "> Preset Installed"
-        else
-            echo "> Extracting the files"
-            preset_extract
-            echo "> External Preset Installed"
-        fi
-        touch $SERVER_PRESET_LOCK_FILE
+        wget "$PRESET_NOGIT"
+        echo "> Extracting the files"
+        preset_extract
+        echo "> External Preset Installed"
     fi
+    touch $SERVER_PRESET_LOCK_FILE
 }
 
 preset() {
-    if [ "$PRESET" = "none" ]; then
+    if [ -z "$PRESET_NOGIT" ] || [ "$PRESET_NOGIT" != "none" ]; then
+        preset_install $PRESET_NOGIT
+    elif [ "$PRESET" = "none" ]; then
         echo "> Preset not chosen"
     elif [ -f "$SERVER_PRESET_LOCK_FILE" ]; then
         echo "> Preset already installed"
-    elif [ "$PRESET_NOGIT" = "none" ]; then
+    else
         echo "> Installing Preset server"
 
         if [ "$PRESET_REPO" = "none" ]; then
             echo "> Using the Repo SourceServerDev"
-            preset_install "$GIT"
+            preset_install "$GIT" "PresetsServer/css/$PRESET"
         else
             echo "> Using the Repo $PRESET_REPO"
-            preset_install "$PRESET_REPO"
+            preset_install "$PRESET_REPO" "$PRESET"
         fi
-    else
-        echo "> Installing Preset server"
-        preset_install
     fi
 }
 
