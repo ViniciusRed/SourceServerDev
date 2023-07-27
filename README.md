@@ -1,7 +1,7 @@
 ## SourceServerDev
 ![Status](https://img.shields.io/badge/status-In_Process-gren.png)
-![Bug](https://img.shields.io/badge/Bug-1-red.png)
-![Updates](https://img.shields.io/badge/Update-1-gren.png)
+![Bug](https://img.shields.io/badge/Bugs-0-red.png)
+![Updates](https://img.shields.io/badge/Updates-8-gren.png)
 ![Releases](https://img.shields.io/github/v/release/ViniciusRed/SourceServerDev?color=gren&display_name=tag)
 ![Download](https://img.shields.io/github/downloads/ViniciusRed/SourceServerDev/total)
 ___
@@ -9,8 +9,11 @@ ___
 <div align="center">
 
 ```CSS
-[Install CsSo] = [In Test]
-[Install Server] = [In Test (css)]
+[Docker(css)] = [Working]
+[Docker(csso)] = [In Wait]
+[Docker(clientmod)] = [In Wait]
+[Launcher] = [In Wait]
+[Install Server] = [Working only linux]
 [CsSoMod] = [In Wait]
 [MetaMod CsSo] = [In Wait]
 ```
