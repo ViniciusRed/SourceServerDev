@@ -73,4 +73,4 @@ try:
         print(f"FastDl running at the door {FASTDL_PORT}. To download, access http://hostip:{FASTDL_PORT}/" )
         httpd.serve_forever()
 except OSError as e:
-    print(f"Error: The port {FASTDL_PORT} is already in use by another process.")
+    print(f"Error: The port {FASTDL_PORT} is already in use by another process or Fastdl is already in.")

@@ -2,7 +2,7 @@
 
 SERVER_DIR=./ServerCSS
 DOWNLOAD_LOCK=download.lock
-LinuxCSS=installed.lock
+
 
 if [ -d $SERVER_DIR ]; then
   echo '> Folder exists'

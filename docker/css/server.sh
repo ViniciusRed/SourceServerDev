@@ -125,7 +125,7 @@ preset_or_update() {
             preset
         fi
     else
-        echo "> Addons not installed. preset_install will not be executed"
+        echo "> Addons not installed. install preset will not be executed"
     fi
 }
 
@@ -176,33 +176,44 @@ preset_extract() {
 
 # Function to update the repository
 update_git_repo() {
-    git pull origin main
+    git pull origin $branch
 }
 
 update_preset() {
-    source $SERVER_DIR/preset.cfg
+    source "$SERVER_DIR/preset.cfg"
+
+    # Nome do branch que será atualizado
+    branch="main"
 
     # Check if the directory is a valid git repository
     if [ -d "$PRESET_FOLDER/.git" ]; then
         # Navega para o diretório do repositório
         cd "$PRESET_FOLDER"
 
-        # Check if there are updates in the Git repository
-        git fetch origin main
-        LOCAL=$(git rev-parse @)
-        REMOTE=$(git rev-parse @{u})
+        # Check if the branch exists in the Git repository
+        if git rev-parse --verify "origin/$branch" &>/dev/null; then
+            # Check if there are updates in the Git repository
+            git fetch origin "$branch"
+            LOCAL=$(git rev-parse "$branch")
+            REMOTE=$(git rev-parse "origin/$branch")
 
-        if [ "$LOCAL" = "$REMOTE" ]; then
-            echo "> The repository is already updated. No necessary update."
+            if [ "$LOCAL" = "$REMOTE" ]; then
+                echo "> The preset $PRESET is already up to date. No necessary update."
+                cd ..
+            else
+                echo "> There are updates available for the preset $PRESET. Updating the Preset ..."
+                update_git_repo
+                echo "> Successfully updated preset $PRESET!"
+                echo '> Updating Preset'
+                cp -r "PresetsServer/css/$PRESET/." "$SERVER_DIR/cstrike" && cd ..
+            fi
         else
-            echo "> There are updates available. Updating the repository ..."
-            update_git_repo
-            echo "> Successful updated repository!"
-            echo '> Updating Preset'
-            cp -r PresetsServer/css/$PRESET/. "$SERVER_DIR/cstrike" && cd ..
+            echo "> The branch $branch does not exist in this repository."
+            cd ..
         fi
     else
-        echo "> Invalid directory or not is a git repository."
+        echo "> Invalid directory or not a git repository."
+        cd ..
     fi
 }
 
