@@ -1,24 +1,106 @@
 #!/bin/bash
 
-source config.cfg
+source .ads/preset.sh
 
 set -e
 
 shopt -s extglob
 
-if [[ $DEBUG_SHELL = true ]]; then
-    echo "> Server Shell Debug on"
-    set -x
-else
-    echo "> Server Shell Debug off"
-fi
 GIT=https://github.com/ViniciusRed/SourceServerDev.git
 SERVER_DIR="${HOME}/css"
-NONSTEAM_DIR="${HOME}/nonsteam/"
-SERVER_INSTALLED_LOCK_FILE="${SERVER_DIR}/installed.lock"
-SERVER_NONSTEAM_LOCK_FILE="${SERVER_DIR}/nonsteam.lock"
-SERVER_PRESET_LOCK_FILE="${SERVER_DIR}/preset.lock"
-ADDONS_INSTALLED_LOCK_FILE="${SERVER_DIR}/cstrike/addons/addons.lock"
+NONSTEAM_DIR="${HOME}/.ads/nonsteam/"
+SERVER_INSTALLED_LOCK_FILE="${HOME}/.ads/installed.lock"
+SERVER_NONSTEAM_LOCK_FILE="${HOME}/.ads/nonsteam.lock"
+SERVER_PRESET_LOCK_FILE="${HOME}/.ads/preset.lock"
+ADDONS_INSTALLED_LOCK_FILE="${HOME}/.ads/addons.lock"
+APP_ID=232330
+STEAMCLIENT=$SERVER_DIR/bin/steamclient.so
+RENAME_STEAMCLIENT=$SERVER_DIR/bin/steamclient_valve.so
+
+generate_config() {
+    declare -A config_table
+    local lock_file="${HOME}/.ads/config.lock"
+    local config_file="${HOME}/config.cfg"
+
+    # Define expected variables and their defaults
+    declare -A default_values=(
+        ["RCON_PASSWORD"]="yourkey"
+        ["ADDONS_VER"]="false"
+        ["PRESET"]="none"
+        ["PRESET_REPO"]="none"
+        ["PRESET_BRANCH"]="main"
+        ["PRESET_NOGIT"]="none"
+        ["PRESET_PRIVATE"]="false"
+        ["PRESET_REPO_TOKEN"]="none"
+        ["SOURCEMOD_VERSION"]="1.12"
+        ["METAMOD_VERSION"]="1.12"
+        ["SERVER_TOKEN"]='""'
+        ["SERVER_HOSTNAME"]="SourceServerDev"
+        ["SERVER_PASSWORD"]='""'
+        ["SERVER_PORT"]="27015"
+        ["TICKRATE"]="66"
+        ["FASTSTART"]="false"
+        ["DISABLEADDONSUPDATE"]="false"
+        ["DISABLE_HLTV"]="false"
+        ["SERVER_MAP"]="de_dust2"
+        ["SERVER_LAN"]="0"
+        ["SERVER_NONSTEAM"]="false"
+        ["MAX_PLAYERS"]="10"
+        ["ENABLE_INSECURE"]="false"
+        ["DEBUG"]="false"
+        ["USE_GDB_DEBUG"]="false"
+        ["DEBUG_SHELL"]="false"
+        ["NOTRAP"]="false"
+        ["NOWATCHDOG"]="false"
+        ["IGNORESIGINT"]="false"
+        ["NORESTART"]="false"
+        ["MAPSYNC_AUTOMATIC"]="false"
+        ["MAPSYNC_APIKEY"]="none"
+        ["MAPSYNC_TIMEOUT"]="10"
+        ["MAPSYNC_INTERVAL"]="60"
+        ["MAPSYNC_FORCE"]="false"
+    )
+
+    # Check if config needs to be generated
+    if [ ! -f "$lock_file" ] || [ ! -f "$config_file" ]; then
+        # Generate new config
+        for key in "${!default_values[@]}"; do
+            config_table[$key]=${!key:-${default_values[$key]}}
+            echo "$key=${config_table[$key]}" >>"$config_file"
+        done
+        touch "$lock_file"
+    else
+        # Ler configuração existente
+        while IFS='=' read -r key value; do
+            # Remover possíveis espaços em branco
+            key=$(echo "$key" | xargs)
+            value=$(echo "$value" | xargs)
+            if [ ! -z "$key" ]; then
+                config_table[$key]=$value
+            fi
+        done <"$config_file"
+
+        # Verificar valores ausentes e usar defaults apenas para eles
+        local config_updated=false
+        local temp_file=$(mktemp)
+
+        for key in "${!default_values[@]}"; do
+            if [ -z "${config_table[$key]}" ]; then
+                config_table[$key]=${!key:-${default_values[$key]}}
+                config_updated=true
+            fi
+            echo "$key=${config_table[$key]}" >>"$temp_file"
+        done
+
+        # Se houve atualização, substituir arquivo antigo
+        if [ "$config_updated" = true ]; then
+            mv "$temp_file" "$config_file"
+            touch "$lock_file"
+        else
+            rm "$temp_file"
+        fi
+    fi
+}
 
 install_or_update() {
     if [ -f "$SERVER_INSTALLED_LOCK_FILE" ]; then
@@ -29,15 +111,69 @@ install_or_update() {
 }
 
 function update {
-    local app_id=232330
-    local update_check=$(steamcmd +login anonymous +app_info_update 1 +app_info_print "$app_id" +quit | grep -c "update available")
+    echo "> Checking for updates for App ID $APP_ID..."
 
-    if [ "$update_check" -gt 0 ]; then
-        echo "> There is an update available for the App ID $app_id. Updating..."
-        steamcmd +login anonymous +force_install_dir $SERVER_DIR +app_update "$app_id" +quit >/dev/null
-        echo "> The update was completed."
+    local TEMP_FILE=$(mktemp)
+
+    steamcmd +login anonymous +app_info_update 1 +app_info_print "$APP_ID" +quit >"$TEMP_FILE" 2>&1
+
+    # Check if server directory exists and has files
+    if [ ! -d "$SERVER_DIR" ] || [ -z "$(ls -A "$SERVER_DIR" 2>/dev/null)" ]; then
+        echo "> Server directory empty or non-existent. Performing initial installation..."
+        NEEDS_UPDATE=true
+    elif grep -q "state.*updating" "$TEMP_FILE"; then
+        echo "> Update available detected on Steam."
+        NEEDS_UPDATE=true
+    elif grep -q "missing executable" "$TEMP_FILE"; then
+        echo "> Executable missing. Reinstallation needed."
+        NEEDS_UPDATE=true
     else
-        echo "> App ID $app_id It is already updated."
+        # Quick check - if server is running, assume it's up to date
+        if [ -n "$(pgrep -f "$SERVER_DIR")" ]; then
+            echo "> Server is already running. Assuming it's up to date."
+            NEEDS_UPDATE=false
+        else
+            echo "> Performing quick update check..."
+            # Run a simple update without validation (faster)
+            steamcmd +login anonymous +force_install_dir "$SERVER_DIR" +app_update "$APP_ID" +quit >"$TEMP_FILE" 2>&1
+
+            if grep -q "already up to date" "$TEMP_FILE"; then
+                echo "> App ID $APP_ID is already up to date."
+                NEEDS_UPDATE=false
+            else
+                echo "> Possible update available."
+                NEEDS_UPDATE=true
+            fi
+        fi
+    fi
+
+    # If update needed, run the full process
+    if [ "$NEEDS_UPDATE" = true ]; then
+        echo "> Running update..."
+        steamcmd +login anonymous +force_install_dir "$SERVER_DIR" +app_update "$APP_ID" +quit >"$TEMP_FILE" 2>&1
+
+        # Check if update was successful
+        if grep -q "Success" "$TEMP_FILE" || grep -q "fully installed" "$TEMP_FILE"; then
+            echo "> Update completed successfully."
+            rm "$TEMP_FILE"
+            return 0
+        else
+            echo "> Update failed. Running with full validation..."
+            # If it fails, try one last time with full validation
+            steamcmd +login anonymous +force_install_dir "$SERVER_DIR" +app_update "$APP_ID" validate +quit
+
+            if [ $? -eq 0 ]; then
+                echo "> Update with validation completed successfully."
+                return 0
+            else
+                echo "> Update failed even with full validation."
+                return 1
+            fi
+        fi
+    else
+        echo "> Server is already up to date."
+        rm "$TEMP_FILE"
+        return 0
     fi
 }
 
@@ -45,76 +181,168 @@ install() {
     echo '> Installing Server'
 
     steamcmd \
-        +force_install_dir $SERVER_DIR \
         +login anonymous \
-        +app_update 232330 validate \
+        +force_install_dir $SERVER_DIR \
+        +app_update $APP_ID validate \
         +quit >/dev/null
 
     touch $SERVER_INSTALLED_LOCK_FILE
 }
 
 start() {
+    while true; do
+        .ads/sync-config.sh
 
-    ./addons.sh $SOURCEMOD_VERSION
-    echo '> Starting FastDl ...'
-    export FASTDL_PORT=$FASTDL_PORT
-    python fastdl.py &
-    echo '> Starting Server ...'
-    additionalParams=""
-
-    if [ $DEBUG = true ]; then
-        additionalParams+=" -debug"
-    fi
-
-    if [ $ENABLE_INSECURE = true ]; then
-        additionalParams+=" -insecure"
-    fi
-
-    if [ "${SERVER_LAN}" = "1" ]; then
-        additionalParams+=" +sv_lan $SERVER_LAN"
-    fi
-
-    if [ ! -z "${RCON_PASSWORD}" ]; then
-        additionalParams+=" +rcon_password \"$RCON_PASSWORD\""
-    fi
-
-    if [ ! -z "${SERVER_HOSTNAME}" ]; then
-        additionalParams+=" +hostname \"$SERVER_HOSTNAME\""
-    fi
-
-    if [ ! -z "${SERVER_MAP}" ]; then
-        additionalParams+=" +map $SERVER_MAP"
-    fi
-
-    $SERVER_DIR/srcds_run \
-        -game cstrike \
-        -console \
-        +ip 0.0.0.0 \
-        -port "$SERVER_PORT" \
-        +maxplayers "$MAX_PLAYERS" \
-        $additionalParams
-}
-
-crackserver_if_needs() {
-    if [ ! -f "$SERVER_NONSTEAM_LOCK_FILE" ]; then
-        if [ $SERVER_NONSTEAM = true ]; then
-            sleep 2
-
-            echo '> Cracking Server'
-            mv $SERVER_DIR/bin/steamclient.so $SERVER_DIR/bin/steamclient_valve.so
-            cp -ar $HOME/nonsteam/* $SERVER_DIR
-            echo '> Done'
-            rm -r $NONSTEAM_DIR
-            touch $SERVER_NONSTEAM_LOCK_FILE
-            sleep 2
+        if [ "$MAPSYNC_AUTOMATIC" = "true" ]; then
+            .ads/mapsync.sh &
         else
-            if [ $SERVER_NONSTEAM = false ]; then
-                if [ -d $NONSTEAM_DIR ]; then
-                    rm -r $NONSTEAM_DIR
-                fi
+            .ads/mapsync.sh
+        fi
+
+        find $HOME -type d,f -exec chown SourceServerDev:SourceServerDev {} \;
+        if [ -d "$SERVER_DIR/cstrike/download/user_custom" ]; then
+            rm -r $SERVER_DIR/cstrike/download/user_custom >/dev/null
+        fi
+
+        if [ -n "$(find $SERVER_DIR/cstrike/logs/ -maxdepth 1 -name '*.log')" ]; then
+            rm -r $SERVER_DIR/cstrike/logs/*.log >/dev/null
+        fi
+
+        if [ $DISABLEADDONSUPDATE = false ]; then
+            if [ $ADDONS_VER = true ]; then
+                .ads/addons.sh $SOURCEMOD_VERSION $METAMOD_VERSION
+            else
+                .ads/addons.sh $SOURCEMOD_VERSION
             fi
         fi
+
+        echo '> Starting Server ...'
+        additionalParams=""
+
+        if [ $DEBUG = true ]; then
+            additionalParams+=" -debug"
+            additionalParams+=" -dev"
+            additionalParams+=" -dumplongticks"
+        fi
+
+        if [ $USE_GDB_DEBUG = true ]; then
+            additionalParams+=" -gdb /bin/gdb"
+        fi
+
+        if [ $NOWATCHDOG = true ]; then
+            additionalParams+=" -nowatchdog"
+        fi
+
+        if [ $NOTRAP = true ]; then
+            additionalParams+=" -notrap"
+        fi
+
+        if [ $DISABLE_HLTV = true ]; then
+            additionalParams+=" -nohltv"
+        fi
+
+        if [ $IGNORESIGINT = true ]; then
+            additionalParams+=" -ignoresigint"
+        fi
+
+        if [ $ENABLE_INSECURE = true ]; then
+            additionalParams+=" -insecure"
+        fi
+
+        if [ $NORESTART = true ]; then
+            additionalParams+=" -norestart"
+        fi
+
+        if [ "${SERVER_LAN}" = "1" ]; then
+            additionalParams+=" +sv_lan $SERVER_LAN"
+        fi
+
+        if [ ! -z "${RCON_PASSWORD}" ]; then
+            additionalParams+=" +rcon_password \"$RCON_PASSWORD\""
+        fi
+
+        if [ ! -z "${SERVER_HOSTNAME}" ]; then
+            additionalParams+=" +hostname \"$SERVER_HOSTNAME\""
+        fi
+
+        if [ ! -z "${SERVER_MAP}" ]; then
+            additionalParams+=" +map $SERVER_MAP"
+        fi
+
+        if [ ! -z "${SERVER_PASSWORD}" ]; then
+            additionalParams+=" +sv_password $SERVER_PASSWORD"
+        fi
+
+        if [ ! -z "${SERVER_TOKEN}" ]; then
+            additionalParams+=" +sv_setsteamaccount $SERVER_TOKEN"
+        fi
+
+        if [ ! -z "${TICKRATE}" ]; then
+            additionalParams+=" -tickrate $TICKRATE"
+        fi
+
+        # Run the server
+        if [ $DEBUG = true ]; then
+            $SERVER_DIR/srcds_run \
+                -game cstrike \
+                -console \
+                +ip 0.0.0.0 \
+                -port "$SERVER_PORT" \
+                +maxplayers "$MAX_PLAYERS" \
+                $additionalParams
+        else
+            sudo -u SourceServerDev $SERVER_DIR/srcds_run \
+                -game cstrike \
+                -console \
+                +ip 0.0.0.0 \
+                -port "$SERVER_PORT" \
+                +maxplayers "$MAX_PLAYERS" \
+                $additionalParams
+        fi
+
+        echo "> Server exited, restarting in 5 seconds..."
+        sleep 5
+    done
+}
+
+toggle_server_crack() {
+
+    if [ "$SERVER_NONSTEAM" = true ] && [ ! -f "$SERVER_NONSTEAM_LOCK_FILE" ]; then
+        echo '> Cracking Server'
+
+        if [ -f "$STEAMCLIENT" ]; then
+            mv "$STEAMCLIENT" "$RENAME_STEAMCLIENT"
+            if [ -d "$NONSTEAM_DIR" ]; then
+                cp -ar "$NONSTEAM_DIR"* "$SERVER_DIR"
+                touch "$SERVER_NONSTEAM_LOCK_FILE"
+                echo '> Done'
+            else
+                echo '> Error: NONSTEAM_DIR not found'
+                mv "$RENAME_STEAMCLIENT" "$STEAMCLIENT"
+            fi
+        else
+            echo '> Error: STEAMCLIENT not found'
+        fi
+    elif [ "$SERVER_NONSTEAM" = false ] && [ -f "$SERVER_NONSTEAM_LOCK_FILE" ]; then
+        echo '> Removing Cracked Server'
+
+        if [ -f "rev.ini" ]; then
+            rm -f "rev.ini"
+        fi
+        if [ -f "rev-client.log" ]; then
+            rm -f "rev-client.log"
+        fi
+        if [ -f "$RENAME_STEAMCLIENT" ]; then
+            rm -f "$STEAMCLIENT"
+            mv "$RENAME_STEAMCLIENT" "$STEAMCLIENT"
+            rm -f "$SERVER_NONSTEAM_LOCK_FILE"
+            echo '> Done'
+        else
+            echo '> Error: Backup steamclient not found'
+        fi
     fi
+    sleep 2
+
 }
 
 preset_or_update() {
@@ -129,139 +357,21 @@ preset_or_update() {
     fi
 }
 
-function extract_zip {
-    unzip "$1"
-}
+generate_config
+source config.cfg
+export SERVER_PORT=$SERVER_PORT
 
-# Function to extract file tar.gz, tar.xz, tar.bz2
-function extract_tar {
-    tar -xf "$1"
-}
-
-preset_extract() {
-    # Using the "ls" command to list the files in the directory
-    # and "grep" to filter files with the desired extensions
-    local dir=$SERVER_DIR/cstrike
-    local file=$(ls "$dir" | grep -E '\.zip$|\.tar\.gz$|\.tar\.xz$|\.tar\.bz2$')
-    local type1=$(basename "$file" .zip)
-    local type2=$(basename "$file" .tar.gz | sed 's/\.tar\.xz$//;s/\.tar\.bz2$//')
-
-    # Loop through the found files and perform the corresponding extraction
-    for file in $file; do
-        way_complete="$dir/$file"
-        case "$file" in
-        *.zip)
-            echo "> Extracting $file..."
-            extract_zip "$way_complete"
-            cd $type1
-            echo "> Copying Files"
-            cp -r . "$dir" && cd ..
-            rm -r $type1
-            ;;
-        *.tar.gz | *.tar.xz | *.tar.bz2)
-            echo "> Extracting $file..."
-            extract_tar "$way_complete"
-            cd $type2
-            echo "> Copying Files"
-            cp -r . "$dir" && cd ..
-            rm -r $type2
-            ;;
-        *)
-            echo "> Unknown extension for the file $file. Ignoring..."
-            ;;
-        esac
-        rm -r $way_complete
-    done
-}
-
-# Function to update the repository
-update_git_repo() {
-    git pull origin $branch
-}
-
-update_preset() {
-    source "$SERVER_DIR/preset.cfg"
-
-    # Nome do branch que será atualizado
-    branch="main"
-
-    # Check if the directory is a valid git repository
-    if [ -d "$PRESET_FOLDER/.git" ]; then
-        # Navega para o diretório do repositório
-        cd "$PRESET_FOLDER"
-
-        # Check if the branch exists in the Git repository
-        if git rev-parse --verify "origin/$branch" &>/dev/null; then
-            # Check if there are updates in the Git repository
-            git fetch origin "$branch"
-            LOCAL=$(git rev-parse "$branch")
-            REMOTE=$(git rev-parse "origin/$branch")
-
-            if [ "$LOCAL" = "$REMOTE" ]; then
-                echo "> The preset $PRESET is already up to date. No necessary update."
-                cd ..
-            else
-                echo "> There are updates available for the preset $PRESET. Updating the Preset ..."
-                update_git_repo
-                echo "> Successfully updated preset $PRESET!"
-                echo '> Updating Preset'
-                cp -r "PresetsServer/css/$PRESET/." "$SERVER_DIR/cstrike" && cd ..
-            fi
-        else
-            echo "> The branch $branch does not exist in this repository."
-            cd ..
-        fi
-    else
-        echo "> Invalid directory or not a git repository."
-        cd ..
-    fi
-}
-
-preset_install() {
-    local folder_git=$(basename "$1" .git)
-    if [ "$PRESET_NOGIT" = "none" ]; then
-        git clone --no-checkout $1 && cd "$folder_git" && echo PRESET_FOLDER=$folder_git >$SERVER_DIR/preset.cfg
-        git sparse-checkout init --cone
-        git sparse-checkout set $2
-        git checkout @
-        echo "> Copying Files"
-        cp -r PresetsServer/css/$PRESET/. "$SERVER_DIR/cstrike" && cd ..
-        echo "> Preset Installed"
-    else
-        echo "> Using the external preset"
-        wget "$PRESET_NOGIT"
-        echo "> Extracting the files"
-        preset_extract
-        echo "> External Preset Installed"
-    fi
-    touch $SERVER_PRESET_LOCK_FILE
-}
-
-preset() {
-    if [ -z "$PRESET_NOGIT" ] || [ "$PRESET_NOGIT" != "none" ]; then
-        preset_install $PRESET_NOGIT
-    elif [ "$PRESET" = "none" ]; then
-        echo "> Preset not chosen"
-    elif [ -f "$SERVER_PRESET_LOCK_FILE" ]; then
-        echo "> Preset already installed"
-    else
-        echo "> Installing Preset server"
-
-        if [ "$PRESET_REPO" = "none" ]; then
-            echo "> Using the Repo SourceServerDev"
-            preset_install "$GIT" "PresetsServer/css/$PRESET"
-        else
-            echo "> Using the Repo $PRESET_REPO"
-            preset_install "$PRESET_REPO" "$PRESET"
-        fi
-    fi
-}
-
-if [ ! -z $1 ]; then
-    $1
+if [[ $DEBUG_SHELL = true ]]; then
+    echo "> Server Shell Debug on"
+    set -x
 else
-    install_or_update
-    crackserver_if_needs
-    preset_or_update
-    start
+    echo "> Server Shell Debug off"
 fi
+
+if [ $FASTSTART = false ]; then
+    install_or_update
+    preset_or_update
+fi
+.ads/system.sh
+toggle_server_crack
+start

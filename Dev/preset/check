@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Diretório temporário para download e extração
+temp_dir=$(mktemp -d)
+
+sourcemod_version=$2
+metamod_version=$2
+
+generate() {
+    sourcemod_url="https://www.sourcemod.net/latest.php?version=${sourcemod_version}&os=linux"
+    metamod_url="https://www.sourcemm.net/latest.php?version=${metamod_version}&os=linux"
+
+    # Download SourceMod and Metamod
+    wget -q "$metamod_url" -O $temp_dir/metamod-latest.tar.gz
+    wget -q "$sourcemod_url" -O $temp_dir/sourcemod-latest.tar.gz
+
+    tar -xzvf "$temp_dir/metamod-latest.tar.gz" -C "$temp_dir" >> /dev/null
+    tar -xzvf "$temp_dir/sourcemod-latest.tar.gz" -C "$temp_dir" >> /dev/null
+
+    # Usar o comando find para listar todos os arquivos no Sourcemod e salvá-los em um arquivo de lista
+    find $temp_dir/addons -type f > sourcemod_files.txt
+    find $temp_dir/cfg -type f >> sourcemod_files.txt
+
+    # Limpar o diretório temporário
+    rm -rf "$temp_dir"
+}
+
+checker() {
+    if [[ "$*" == *"-debug"* ]]; then
+        set -x
+    fi
+
+    # Se o arquivo sourcemod_files.txt não existir, gerar a lista
+    if [ ! -f "sourcemod_files.txt" ]; then
+        generate
+    fi
+
+    # Ler o arquivo de lista do Sourcemod
+    mapfile -t sourcemod_files < "sourcemod_files.txt"
+
+    # Loop pelos arquivos listados no sourcemod_files.txt
+    for file in "${sourcemod_files[@]}"; do
+        # Verifica se o arquivo existe
+        if [ -f "$file" ]; then
+            # Remove o arquivo
+            rm "$file"
+            echo "Arquivo removido: $file"
+            
+            # Verifica se o diretório está vazio
+            dir=$(dirname "$file")
+            if [ -z "$(ls -A "$dir")" ]; then
+                # Remove o diretório se estiver vazio
+                rmdir "$dir"
+                echo "Diretório removido: $dir"
+            fi
+        fi
+    done
+}
+
+$1
+checker
